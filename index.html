@@ -11,13 +11,14 @@
   <link rel="manifest" href="manifest.json" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet" />
-
   <style>
-    :root {
-      --cream:#fdf6f0; --blush:#f9e8e0; --rose:#e8a598; --rose-deep:#d4756a;
-      --sage:#b5c9b7; --sage-deep:#7da880; --lavender:#d4c5e2; --lavender-deep:#9b7ec8;
-      --text:#3d2c28; --text-soft:#8a6e6a; --white:#ffffff;
-      --shadow:rgba(180,100,90,0.12); --radius:20px; --radius-sm:12px;
+    :root{
+      --cream:#fdf6f0;--blush:#f9e8e0;--rose:#e8a598;--rose-deep:#d4756a;
+      --sage:#b5c9b7;--sage-deep:#7da880;--lavender:#d4c5e2;--lavender-deep:#9b7ec8;
+      --gold:#f0c060;--gold-deep:#c8860a;
+      --sky:#b8ddf0;--sky-deep:#4a9fc4;
+      --text:#3d2c28;--text-soft:#8a6e6a;--white:#fff;
+      --shadow:rgba(180,100,90,0.12);--radius:20px;--radius-sm:12px;
     }
     *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
     body{font-family:'Noto Sans TC',sans-serif;background:var(--cream);color:var(--text);min-height:100vh;max-width:430px;margin:0 auto;}
@@ -29,7 +30,7 @@
     .topbar-date{font-size:12px;color:var(--text-soft);font-weight:500;}
     .sync-status{display:flex;align-items:center;gap:4px;}
     .sync-dot{width:7px;height:7px;border-radius:50%;background:#ccc;flex-shrink:0;}
-    .sync-dot.ok{background:#7da880;} .sync-dot.err{background:#e05252;}
+    .sync-dot.ok{background:#7da880;}.sync-dot.err{background:#e05252;}
     .sync-dot.loading{background:#f0c060;animation:pulse 1s infinite;}
     @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
 
@@ -43,16 +44,14 @@
     /* ── DATE NAV ── */
     .date-nav{margin:14px 16px 0;background:var(--white);border-radius:var(--radius);padding:10px 14px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 10px var(--shadow);}
     .date-nav-btn{width:36px;height:36px;background:var(--blush);border:none;border-radius:10px;font-size:18px;color:var(--rose-deep);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:transform 0.1s;}
-    .date-nav-btn:active{transform:scale(0.9);}
-    .date-nav-btn:disabled{opacity:0.3;cursor:not-allowed;}
+    .date-nav-btn:active{transform:scale(0.9);}.date-nav-btn:disabled{opacity:0.3;cursor:not-allowed;}
     .date-nav-center{text-align:center;flex:1;cursor:pointer;}
     .date-nav-label{font-family:'Nunito',sans-serif;font-size:16px;font-weight:800;color:var(--text);}
-    .date-nav-label:hover{color:var(--rose-deep);}
     .date-nav-sub{font-size:11px;color:var(--text-soft);margin-top:2px;}
     .date-cal-hint{font-size:10px;color:var(--rose);margin-top:2px;}
     .date-nav-today{display:inline-block;margin-top:4px;font-size:11px;background:var(--rose);color:white;border-radius:8px;padding:2px 8px;cursor:pointer;font-weight:600;}
 
-    /* ── CALENDAR MODAL ── */
+    /* ── CALENDAR ── */
     .cal-overlay{display:none;position:fixed;inset:0;background:rgba(61,44,40,0.5);z-index:250;align-items:flex-end;justify-content:center;}
     .cal-overlay.open{display:flex;}
     .cal-modal{background:var(--cream);border-radius:28px 28px 0 0;padding:24px 20px 40px;width:100%;max-width:430px;animation:slideUp 0.3s ease;}
@@ -66,15 +65,12 @@
     .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);grid-template-rows:repeat(6,44px);gap:4px;}
     .cal-day{display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:12px;cursor:pointer;border:2px solid transparent;transition:all 0.15s;position:relative;}
     .cal-day:active{transform:scale(0.9);}
-    .cal-day.empty{cursor:default;}
-    .cal-day.other-month{opacity:0.3;}
-    .cal-day.today{border-color:var(--rose);}
+    .cal-day.other-month{opacity:0.3;}.cal-day.today{border-color:var(--rose);}
     .cal-day.selected{background:var(--rose-deep);color:white;}
     .cal-day.has-data::after{content:'';position:absolute;bottom:3px;width:5px;height:5px;border-radius:50%;background:var(--sage-deep);}
     .cal-day.selected.has-data::after{background:rgba(255,255,255,0.7);}
     .cal-day-num{font-family:'Nunito',sans-serif;font-size:15px;font-weight:700;}
-    .cal-day.today .cal-day-num{color:var(--rose-deep);}
-    .cal-day.selected .cal-day-num{color:white;}
+    .cal-day.today .cal-day-num{color:var(--rose-deep);}.cal-day.selected .cal-day-num{color:white;}
     .cal-today-btn{width:100%;margin-top:16px;padding:13px;background:var(--blush);border:none;border-radius:var(--radius-sm);font-size:15px;font-family:'Nunito',sans-serif;font-weight:800;color:var(--rose-deep);cursor:pointer;}
 
     /* ── GOAL BAR ── */
@@ -92,8 +88,22 @@
     .goal-bar-fill.done{background:linear-gradient(90deg,var(--sage),var(--sage-deep));}
     .goal-status{margin-top:7px;display:flex;align-items:center;justify-content:space-between;}
     .badge{font-size:11px;font-weight:700;padding:2px 8px;border-radius:8px;}
-    .badge-progress{background:#fff3e0;color:#e07a00;}
-    .badge-done{background:#e8f5e9;color:#388e3c;}
+    .badge-progress{background:#fff3e0;color:#e07a00;}.badge-done{background:#e8f5e9;color:#388e3c;}
+
+    /* ── INVENTORY SECTION ── */
+    .inventory-section{margin:12px 16px 0;background:var(--white);border-radius:var(--radius);padding:14px 16px;box-shadow:0 2px 10px var(--shadow);}
+    .inventory-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+    .inventory-title{font-size:13px;font-weight:700;color:var(--text-soft);}
+    .inventory-manage-btn{font-size:12px;color:var(--rose-deep);font-weight:600;cursor:pointer;background:var(--blush);border:none;border-radius:8px;padding:4px 10px;}
+    .inventory-list{display:flex;flex-direction:column;gap:8px;}
+    .inventory-item{display:flex;align-items:center;gap:10px;}
+    .inventory-brand{font-size:13px;font-weight:600;color:var(--text);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .inventory-bar-wrap{flex:2;background:var(--blush);border-radius:6px;height:8px;overflow:hidden;}
+    .inventory-bar-fill{height:100%;border-radius:6px;background:linear-gradient(90deg,var(--gold),var(--gold-deep));transition:width 0.5s ease;}
+    .inventory-bar-fill.low{background:linear-gradient(90deg,#f08080,#e05252);}
+    .inventory-grams{font-size:12px;font-weight:700;color:var(--text-soft);white-space:nowrap;min-width:48px;text-align:right;}
+    .inventory-grams.low{color:#e05252;}
+    .inventory-empty{font-size:13px;color:var(--text-soft);text-align:center;padding:8px 0;}
 
     /* ── SUMMARY CARDS ── */
     .summary-section{padding:12px 16px 8px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
@@ -108,27 +118,36 @@
     /* ── ADD BUTTON ── */
     .add-btn-wrap{padding:10px 16px 6px;}
     .add-btn{width:100%;background:linear-gradient(135deg,var(--rose-deep),#c45f54);color:white;border:none;border-radius:var(--radius);padding:15px;font-size:17px;font-family:'Nunito',sans-serif;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 6px 20px rgba(212,117,106,0.4);transition:transform 0.1s;}
-    .add-btn:active{transform:scale(0.97);}
-    .add-btn:disabled{opacity:0.4;cursor:not-allowed;}
+    .add-btn:active{transform:scale(0.97);}.add-btn:disabled{opacity:0.4;cursor:not-allowed;}
 
     /* ── RECORDS ── */
     .section-header{padding:10px 16px 6px;font-family:'Nunito',sans-serif;font-size:15px;font-weight:800;color:var(--text);}
     .records-list{padding:0 16px 100px;display:flex;flex-direction:column;gap:10px;}
     .record-card{background:var(--white);border-radius:var(--radius);padding:14px;box-shadow:0 2px 12px var(--shadow);display:flex;align-items:center;gap:12px;animation:fadeIn 0.25s ease;}
     @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-    .record-icon{width:44px;height:44px;background:var(--blush);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+    .record-icon{width:44px;height:44px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+    .record-icon.formula{background:var(--blush);}
+    .record-icon.breast{background:#e8f4e8;}
     .record-info{flex:1;min-width:0;}
     .record-time{font-family:'Nunito',sans-serif;font-size:16px;font-weight:800;color:var(--text);}
     .record-nth{font-size:11px;color:var(--text-soft);font-weight:500;margin-left:4px;}
-    .record-amount{font-size:13px;color:var(--rose-deep);font-weight:700;margin-top:2px;}
+    .record-amount{font-size:13px;font-weight:700;margin-top:2px;}
+    .record-amount.formula{color:var(--rose-deep);}
+    .record-amount.breast{color:var(--sage-deep);}
     .record-meta{font-size:12px;color:var(--text-soft);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
     .record-actions{display:flex;flex-direction:column;gap:6px;flex-shrink:0;}
     .btn-icon{width:34px;height:34px;border:none;border-radius:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:transform 0.1s;}
     .btn-icon:active{transform:scale(0.9);}
-    .btn-edit{background:var(--blush);} .btn-delete{background:#fde8e8;}
+    .btn-edit{background:var(--blush);}.btn-delete{background:#fde8e8;}
     .empty-state{text-align:center;padding:36px 24px;color:var(--text-soft);}
     .empty-state .emoji{font-size:40px;margin-bottom:10px;}
     .empty-state p{font-size:14px;line-height:1.7;}
+
+    /* ── FEED TYPE TOGGLE ── */
+    .feed-type-toggle{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:4px;}
+    .feed-type-btn{padding:12px;border:2px solid var(--blush);border-radius:var(--radius-sm);background:var(--white);font-size:14px;font-family:'Noto Sans TC',sans-serif;font-weight:700;color:var(--text-soft);cursor:pointer;text-align:center;transition:all 0.15s;display:flex;align-items:center;justify-content:center;gap:6px;}
+    .feed-type-btn.active.formula{background:var(--blush);border-color:var(--rose-deep);color:var(--rose-deep);}
+    .feed-type-btn.active.breast{background:#e8f4e8;border-color:var(--sage-deep);color:var(--sage-deep);}
 
     /* ── MODALS ── */
     .modal-overlay{display:none;position:fixed;inset:0;background:rgba(61,44,40,0.5);z-index:200;align-items:flex-end;justify-content:center;}
@@ -152,6 +171,15 @@
     .modal-actions{display:flex;gap:10px;margin-top:24px;}
     .btn-cancel{flex:1;padding:15px;background:var(--blush);border:none;border-radius:var(--radius-sm);font-size:16px;font-family:'Nunito',sans-serif;font-weight:800;color:var(--text-soft);cursor:pointer;}
     .btn-save{flex:2;padding:15px;background:linear-gradient(135deg,var(--rose-deep),#c45f54);border:none;border-radius:var(--radius-sm);font-size:16px;font-family:'Nunito',sans-serif;font-weight:800;color:white;cursor:pointer;}
+
+    /* ── INVENTORY MANAGE MODAL ── */
+    .inv-brand-list{display:flex;flex-direction:column;gap:10px;margin-bottom:8px;}
+    .inv-brand-row{background:var(--white);border-radius:var(--radius-sm);padding:12px 14px;display:flex;align-items:center;gap:10px;box-shadow:0 2px 8px var(--shadow);}
+    .inv-brand-name{font-size:14px;font-weight:600;color:var(--text);flex:1;}
+    .inv-brand-input{width:90px;padding:8px 10px;border:2px solid var(--blush);border-radius:10px;font-size:15px;font-family:'Nunito',sans-serif;font-weight:700;color:var(--rose-deep);text-align:center;outline:none;}
+    .inv-brand-input:focus{border-color:var(--rose-deep);}
+    .inv-brand-unit{font-size:12px;color:var(--text-soft);font-weight:600;}
+    .inv-hint{font-size:12px;color:var(--text-soft);line-height:1.6;margin-top:8px;}
 
     /* ── AVATAR GRID ── */
     .avatar-section-label{font-size:11px;font-weight:700;color:var(--text-soft);letter-spacing:0.5px;margin:12px 0 6px;}
@@ -184,632 +212,669 @@
 </head>
 <body>
 
-  <!-- TOP BAR -->
-  <div class="topbar">
-    <div class="topbar-title">🍼 寶寶奶粉紀錄</div>
-    <div class="topbar-right">
-      <div class="topbar-date" id="todayDate"></div>
-      <div class="sync-status">
-        <div class="sync-dot loading" id="syncDot"></div>
-        <span id="syncText" style="font-size:11px;color:var(--text-soft)">連線中…</span>
-      </div>
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="topbar-title">🍼 寶寶奶粉紀錄</div>
+  <div class="topbar-right">
+    <div class="topbar-date" id="todayDate"></div>
+    <div class="sync-status">
+      <div class="sync-dot loading" id="syncDot"></div>
+      <span id="syncText" style="font-size:11px;color:var(--text-soft)">連線中…</span>
     </div>
   </div>
+</div>
 
-  <!-- BABY BAR -->
-  <div class="baby-bar" id="babyBar">
-    <div class="btn-add-baby" onclick="openBabyModal()">＋</div>
+<!-- BABY BAR -->
+<div class="baby-bar" id="babyBar">
+  <div class="btn-add-baby" onclick="openBabyModal()">＋</div>
+</div>
+
+<!-- DATE NAV -->
+<div class="date-nav">
+  <button class="date-nav-btn" onclick="changeDay(-1)">‹</button>
+  <div class="date-nav-center" onclick="openCalendar()">
+    <div class="date-nav-label" id="dateNavLabel">—</div>
+    <div class="date-nav-sub" id="dateNavSub"></div>
+    <div class="date-cal-hint">📅 點此開啟日曆</div>
+    <div id="backTodayWrap"></div>
   </div>
+  <button class="date-nav-btn" id="nextDayBtn" onclick="changeDay(1)">›</button>
+</div>
 
-  <!-- DATE NAVIGATOR -->
-  <div class="date-nav">
-    <button class="date-nav-btn" onclick="changeDay(-1)">‹</button>
-    <div class="date-nav-center" onclick="openCalendar()">
-      <div class="date-nav-label" id="dateNavLabel">—</div>
-      <div class="date-nav-sub" id="dateNavSub"></div>
-      <div class="date-cal-hint">📅 點此開啟日曆</div>
-      <div id="backTodayWrap"></div>
+<!-- CALENDAR MODAL -->
+<div class="cal-overlay" id="calOverlay" onclick="handleCalOverlayClick(event)">
+  <div class="cal-modal">
+    <div class="cal-handle"></div>
+    <div class="cal-header">
+      <button class="cal-month-btn" onclick="changeCalMonth(-1)">‹</button>
+      <div class="cal-month-label" id="calMonthLabel"></div>
+      <button class="cal-month-btn" onclick="changeCalMonth(1)">›</button>
     </div>
-    <button class="date-nav-btn" id="nextDayBtn" onclick="changeDay(1)">›</button>
+    <div class="cal-weekdays">
+      <div class="cal-weekday" style="color:#e05252">日</div>
+      <div class="cal-weekday">一</div><div class="cal-weekday">二</div>
+      <div class="cal-weekday">三</div><div class="cal-weekday">四</div>
+      <div class="cal-weekday">五</div>
+      <div class="cal-weekday" style="color:#7da880">六</div>
+    </div>
+    <div class="cal-grid" id="calGrid"></div>
+    <button class="cal-today-btn" onclick="calGoToday()">回到今天</button>
   </div>
+</div>
 
-  <!-- CALENDAR MODAL -->
-  <div class="cal-overlay" id="calOverlay" onclick="handleCalOverlayClick(event)">
-    <div class="cal-modal">
-      <div class="cal-handle"></div>
-      <div class="cal-header">
-        <button class="cal-month-btn" onclick="changeCalMonth(-1)">‹</button>
-        <div class="cal-month-label" id="calMonthLabel"></div>
-        <button class="cal-month-btn" onclick="changeCalMonth(1)">›</button>
-      </div>
-      <div class="cal-weekdays">
-        <div class="cal-weekday" style="color:#e05252">日</div>
-        <div class="cal-weekday">一</div><div class="cal-weekday">二</div>
-        <div class="cal-weekday">三</div><div class="cal-weekday">四</div>
-        <div class="cal-weekday">五</div>
-        <div class="cal-weekday" style="color:#7da880">六</div>
-      </div>
-      <div class="cal-grid" id="calGrid"></div>
-      <button class="cal-today-btn" onclick="calGoToday()">回到今天</button>
-    </div>
+<!-- GOAL PROGRESS -->
+<div class="goal-section">
+  <div class="goal-header">
+    <div class="goal-title">🎯 當日目標</div>
+    <button class="goal-edit-btn" onclick="openGoalModal()">設定目標</button>
   </div>
-
-  <!-- GOAL PROGRESS -->
-  <div class="goal-section">
-    <div class="goal-header">
-      <div class="goal-title">🎯 當日目標</div>
-      <button class="goal-edit-btn" onclick="openGoalModal()">設定目標</button>
-    </div>
-    <div class="goal-numbers">
-      <span class="goal-current" id="goalCurrent">0</span>
-      <span class="goal-sep">/</span>
-      <span class="goal-target" id="goalTarget">—</span>
-      <span class="goal-unit">ml</span>
-    </div>
-    <div class="goal-bar-wrap">
-      <div class="goal-bar-fill" id="goalBarFill" style="width:0%"></div>
-    </div>
-    <div class="goal-status">
-      <span id="goalStatusText" style="font-size:12px;color:var(--text-soft)">尚未設定目標</span>
-      <span class="badge" id="goalBadge"></span>
-    </div>
+  <div class="goal-numbers">
+    <span class="goal-current" id="goalCurrent">0</span>
+    <span class="goal-sep">/</span>
+    <span class="goal-target" id="goalTarget">—</span>
+    <span class="goal-unit">ml</span>
   </div>
-
-  <!-- SUMMARY CARDS -->
-  <div class="summary-section">
-    <div class="card">
-      <div class="card-label">📊 當日總量</div>
-      <div><span class="card-value" id="totalAmount">0</span><span class="card-unit">ml</span></div>
-      <div class="card-sub" id="totalCount">共 0 次</div>
-    </div>
-    <div class="card lavender">
-      <div class="card-label">🍼 餵奶次數</div>
-      <div><span class="card-value" id="feedCount">0</span><span class="card-unit">次</span></div>
-      <div class="card-sub" id="avgAmount">平均 — ml</div>
-    </div>
-    <div class="card sage">
-      <div class="card-label">⏰ 最後餵奶</div>
-      <div class="card-value" id="lastFeedTime" style="font-size:18px;margin-top:4px">—</div>
-      <div class="card-sub" id="lastFeedAgo"></div>
-    </div>
+  <div class="goal-bar-wrap"><div class="goal-bar-fill" id="goalBarFill" style="width:0%"></div></div>
+  <div class="goal-status">
+    <span id="goalStatusText" style="font-size:12px;color:var(--text-soft)">尚未設定目標</span>
+    <span class="badge" id="goalBadge"></span>
   </div>
+</div>
 
-  <!-- ADD BUTTON -->
-  <div class="add-btn-wrap">
-    <button class="add-btn" id="addBtn" onclick="openModal()">＋ 新增餵奶紀錄</button>
+<!-- INVENTORY -->
+<div class="inventory-section">
+  <div class="inventory-header">
+    <div class="inventory-title">📦 奶粉庫存</div>
+    <button class="inventory-manage-btn" onclick="openInventoryModal()">管理庫存</button>
   </div>
+  <div class="inventory-list" id="inventoryList">
+    <div class="inventory-empty">尚未設定庫存，點「管理庫存」新增</div>
+  </div>
+</div>
 
-  <!-- RECORD LIST -->
-  <div class="section-header" id="listHeader">📋 紀錄</div>
-  <div class="records-list" id="recordsList"></div>
+<!-- SUMMARY CARDS -->
+<div class="summary-section">
+  <div class="card">
+    <div class="card-label">📊 當日總量</div>
+    <div><span class="card-value" id="totalAmount">0</span><span class="card-unit">ml</span></div>
+    <div class="card-sub" id="totalCount">共 0 次</div>
+  </div>
+  <div class="card lavender">
+    <div class="card-label">🍼 奶粉</div>
+    <div><span class="card-value" id="formulaAmount">0</span><span class="card-unit">ml</span></div>
+    <div class="card-sub" id="formulaCount">0 次</div>
+  </div>
+  <div class="card sage">
+    <div class="card-label">🤱 母乳</div>
+    <div><span class="card-value" id="breastAmount">0</span><span class="card-unit">ml</span></div>
+    <div class="card-sub" id="breastCount">0 次</div>
+  </div>
+</div>
 
-  <!-- ADD/EDIT RECORD MODAL -->
-  <div class="modal-overlay" id="modalOverlay" onclick="handleOverlayClick(event)">
-    <div class="modal">
-      <div class="modal-handle"></div>
-      <div class="modal-title" id="modalTitle">新增餵奶紀錄</div>
-      <div class="form-group">
-        <label class="form-label">⏰ 時間</label>
-        <input type="datetime-local" class="form-input" id="inputTime" />
-      </div>
-      <div class="form-group">
-        <label class="form-label">🍼 奶量（ml）</label>
-        <div class="amount-stepper">
-          <button class="stepper-btn" onclick="changeAmount(-10)">－</button>
-          <div class="stepper-display"><span id="amountDisplay">120</span><span class="stepper-unit"> ml</span></div>
-          <button class="stepper-btn" onclick="changeAmount(+10)">＋</button>
-        </div>
-      </div>
-      <div class="form-group">
-        <label class="form-label">🏷️ 奶粉品牌</label>
-        <div class="brand-chips" id="brandChips"></div>
-        <input type="text" class="form-input" id="inputBrand" placeholder="或直接輸入品牌名稱" />
-      </div>
-      <div class="form-group">
-        <label class="form-label">📝 備註（選填）</label>
-        <input type="text" class="form-input" id="inputNote" placeholder="例：喝得很好、有溢奶…" />
-      </div>
-      <div class="modal-actions">
-        <button class="btn-cancel" onclick="closeModal()">取消</button>
-        <button class="btn-save" onclick="saveRecord()">💾 儲存</button>
+<!-- ADD BUTTON -->
+<div class="add-btn-wrap">
+  <button class="add-btn" id="addBtn" onclick="openModal()">＋ 新增餵奶紀錄</button>
+</div>
+
+<!-- RECORD LIST -->
+<div class="section-header" id="listHeader">📋 今日紀錄</div>
+<div class="records-list" id="recordsList"></div>
+
+<!-- ── ADD/EDIT RECORD MODAL ── -->
+<div class="modal-overlay" id="modalOverlay" onclick="handleOverlayClick(event)">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="modalTitle">新增餵奶紀錄</div>
+
+    <!-- 類型選擇 -->
+    <div class="form-group">
+      <label class="form-label">🍽️ 餵奶類型</label>
+      <div class="feed-type-toggle">
+        <button class="feed-type-btn formula active" id="typeFormula" onclick="setFeedType('formula')">🍼 奶粉</button>
+        <button class="feed-type-btn breast" id="typeBreast" onclick="setFeedType('breast')">🤱 母乳</button>
       </div>
     </div>
-  </div>
 
-  <!-- GOAL MODAL -->
-  <div class="modal-overlay" id="goalModalOverlay" onclick="handleGoalOverlayClick(event)">
-    <div class="modal">
-      <div class="modal-handle"></div>
-      <div class="modal-title">🎯 設定每日目標</div>
-      <div class="form-group">
-        <label class="form-label">目標奶量（ml）</label>
-        <div class="goal-preset-chips" id="goalPresets"></div>
-        <input type="number" class="form-input" id="inputGoal" placeholder="或直接輸入數字" min="100" max="5000" step="50" />
-        <div class="goal-hint">💡 新生兒約 400–600 ml／天，3個月以上約 700–900 ml，請依醫師建議。</div>
-      </div>
-      <div class="modal-actions">
-        <button class="btn-cancel" onclick="closeGoalModal()">取消</button>
-        <button class="btn-save" onclick="saveGoal()">💾 儲存</button>
+    <div class="form-group">
+      <label class="form-label">⏰ 時間</label>
+      <input type="datetime-local" class="form-input" id="inputTime" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">🍼 奶量（ml）</label>
+      <div class="amount-stepper">
+        <button class="stepper-btn" onclick="changeAmount(-10)">－</button>
+        <div class="stepper-display"><span id="amountDisplay">120</span><span class="stepper-unit"> ml</span></div>
+        <button class="stepper-btn" onclick="changeAmount(+10)">＋</button>
       </div>
     </div>
-  </div>
 
-  <!-- BABY MODAL -->
-  <div class="modal-overlay" id="babyModalOverlay" onclick="handleBabyOverlayClick(event)">
-    <div class="modal">
-      <div class="modal-handle"></div>
-      <div class="modal-title" id="babyModalTitle">新增寶寶</div>
-      <div class="form-group">
-        <label class="form-label">👶 寶寶名字</label>
-        <input type="text" class="form-input" id="inputBabyName" placeholder="例：小明、寶寶" maxlength="10" />
-      </div>
-      <div class="form-group">
-        <label class="form-label">🎨 選擇頭像</label>
-        <!-- 寶寶膚色系列 -->
-        <div class="avatar-section-label">👶 寶寶（不同膚色）</div>
-        <div class="emoji-grid" id="emojiGridBaby"></div>
-        <!-- 動物 & 其他 -->
-        <div class="avatar-section-label">🐾 動物 & 其他</div>
-        <div class="emoji-grid" id="emojiGridOther"></div>
-      </div>
-      <div class="modal-actions">
-        <button class="btn-cancel" onclick="closeBabyModal()">取消</button>
-        <button class="btn-save" onclick="saveBaby()">💾 儲存</button>
-      </div>
+    <!-- 品牌區（奶粉才顯示） -->
+    <div class="form-group" id="brandSection">
+      <label class="form-label">🏷️ 奶粉品牌</label>
+      <div class="brand-chips" id="brandChips"></div>
+      <input type="text" class="form-input" id="inputBrand" placeholder="或直接輸入品牌名稱" />
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">📝 備註（選填）</label>
+      <input type="text" class="form-input" id="inputNote" placeholder="例：喝得很好、有溢奶…" />
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal()">取消</button>
+      <button class="btn-save" onclick="saveRecord()">💾 儲存</button>
     </div>
   </div>
+</div>
 
-  <!-- DELETE CONFIRM -->
-  <div class="confirm-overlay" id="confirmOverlay">
-    <div class="confirm-box">
-      <div class="confirm-emoji">🗑️</div>
-      <div class="confirm-title">確定要刪除？</div>
-      <div class="confirm-sub">這筆紀錄將永久刪除，無法還原。</div>
-      <div class="confirm-actions">
-        <button class="btn-cc" onclick="closeConfirm()">取消</button>
-        <button class="btn-cd" onclick="confirmDelete()">刪除</button>
-      </div>
+<!-- ── INVENTORY MANAGE MODAL ── -->
+<div class="modal-overlay" id="inventoryModalOverlay" onclick="handleInvOverlayClick(event)">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">📦 管理奶粉庫存</div>
+    <div class="inv-brand-list" id="invBrandList"></div>
+    <div class="inv-hint">💡 輸入目前家中剩餘的奶粉克數。每次新增奶粉紀錄時，系統會依照沖泡比例自動扣除（預設每 30ml 扣 1g）。</div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeInventoryModal()">取消</button>
+      <button class="btn-save" onclick="saveInventory()">💾 儲存</button>
     </div>
   </div>
+</div>
 
-  <!-- TOAST -->
-  <div class="toast" id="toast"></div>
+<!-- ── GOAL MODAL ── -->
+<div class="modal-overlay" id="goalModalOverlay" onclick="handleGoalOverlayClick(event)">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">🎯 設定每日目標</div>
+    <div class="form-group">
+      <label class="form-label">目標奶量（ml）</label>
+      <div class="goal-preset-chips" id="goalPresets"></div>
+      <input type="number" class="form-input" id="inputGoal" placeholder="或直接輸入數字" min="100" max="5000" step="50" />
+      <div class="goal-hint">💡 新生兒約 400–600 ml／天，3個月以上約 700–900 ml，請依醫師建議。</div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeGoalModal()">取消</button>
+      <button class="btn-save" onclick="saveGoal()">💾 儲存</button>
+    </div>
+  </div>
+</div>
 
-  <script type="module">
-    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-    import { getDatabase, ref, push, set, remove, onValue } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
+<!-- ── BABY MODAL ── -->
+<div class="modal-overlay" id="babyModalOverlay" onclick="handleBabyOverlayClick(event)">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="babyModalTitle">新增寶寶</div>
+    <div class="form-group">
+      <label class="form-label">👶 寶寶名字</label>
+      <input type="text" class="form-input" id="inputBabyName" placeholder="例：小明、寶寶" maxlength="10" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">🎨 選擇頭像</label>
+      <div class="avatar-section-label">👶 寶寶（不同膚色）</div>
+      <div class="emoji-grid" id="emojiGridBaby"></div>
+      <div class="avatar-section-label">🐾 動物 & 其他</div>
+      <div class="emoji-grid" id="emojiGridOther"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeBabyModal()">取消</button>
+      <button class="btn-save" onclick="saveBaby()">💾 儲存</button>
+    </div>
+  </div>
+</div>
 
-    const FIREBASE_CONFIG = {
-      databaseURL: "https://baby-feed-dbaf5-default-rtdb.asia-southeast1.firebasedatabase.app"
-    };
+<!-- DELETE CONFIRM -->
+<div class="confirm-overlay" id="confirmOverlay">
+  <div class="confirm-box">
+    <div class="confirm-emoji">🗑️</div>
+    <div class="confirm-title">確定要刪除？</div>
+    <div class="confirm-sub">這筆紀錄將永久刪除，無法還原。</div>
+    <div class="confirm-actions">
+      <button class="btn-cc" onclick="closeConfirm()">取消</button>
+      <button class="btn-cd" onclick="confirmDelete()">刪除</button>
+    </div>
+  </div>
+</div>
 
-    const BRANDS = ['愛他美','牛欄牌','明治','亞培','桂格','雀巢','美強生','惠氏','貝親','森永','豐力富','飛達兒','嘉寶','喜寶','其他'];
-    const GOAL_PRESETS = [400,500,600,700,800,900,1000];
+<div class="toast" id="toast"></div>
 
-    // 寶寶頭像：不同膚色（使用 Unicode 膚色修飾符）
-    const AVATARS_BABY = [
-      '👶🏻','👶🏼','👶🏽','👶🏾','👶🏿','👶',   // 淺→深膚色 + 預設
-      '👧🏻','👧🏼','👧🏽','👧🏾','👧🏿','👧',   // 女孩
-      '👦🏻','👦🏼','👦🏽','👦🏾','👦🏿','👦',   // 男孩
-    ];
-    // 其他可愛選項
-    const AVATARS_OTHER = [
-      '🐣','🐥','🌸','⭐','🌈','🦋',
-      '🐧','🐨','🐼','🐸','🦊','🐰',
-    ];
+<script type="module">
+  import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+  import { getDatabase, ref, push, set, remove, onValue } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
 
-    // ── State ──
-    let records=[], babies=[];
-    let currentBabyId=null;
-    let viewDate=new Date();
-    let calDate=new Date(); // calendar display month
-    let editingRecordId=null, editingBabyId=null, deletingId=null;
-    let currentAmount=120, selectedAvatar='👶';
-    let goalMl=0;
-    let db=null;
+  const FIREBASE_CONFIG = { databaseURL:"https://baby-feed-dbaf5-default-rtdb.asia-southeast1.firebasedatabase.app" };
 
-    // ── Init ──
-    function init() {
-      setViewDateToToday();
-      renderDateNav();
-      buildBrandChips();
-      buildAvatarGrids();
-      buildGoalPresets();
-      loadGoal();
-      setInterval(()=>{ renderSummary(); renderGoalBar(); }, 60000);
-      connectFirebase();
-    }
+  const BRANDS = ['愛他美','牛欄牌','明治','亞培','桂格','雀巢','美強生','惠氏','貝親','森永','豐力富','飛達兒','嘉寶','喜寶','其他'];
+  const GOAL_PRESETS = [400,500,600,700,800,900,1000];
+  const AVATARS_BABY  = ['👶🏻','👶🏼','👶🏽','👶🏾','👶🏿','👶','👧🏻','👧🏼','👧🏽','👧🏾','👧🏿','👧','👦🏻','👦🏼','👦🏽','👦🏾','👦🏿','👦'];
+  const AVATARS_OTHER = ['🐣','🐥','🌸','⭐','🌈','🦋','🐧','🐨','🐼','🐸','🦊','🐰'];
+  // 每 30ml 奶液消耗約 1g 奶粉（可依品牌調整）
+  const ML_PER_GRAM = 30;
 
-    function setViewDateToToday() {
-      const n=new Date();
-      viewDate=new Date(n.getFullYear(),n.getMonth(),n.getDate());
-    }
+  // ── State ──
+  let records=[], babies=[];
+  let currentBabyId=null;
+  let viewDate=new Date();
+  let calDate=new Date();
+  let editingRecordId=null, editingBabyId=null, deletingId=null;
+  let currentAmount=120, selectedAvatar='👶';
+  let currentFeedType='formula'; // 'formula' | 'breast'
+  let goalMl=0;
+  // inventory: { [brandName]: gramsRemaining }
+  let inventory={};
+  let db=null;
 
-    function connectFirebase() {
-      try {
-        setSyncStatus('loading','連線中…');
-        const app=initializeApp(FIREBASE_CONFIG);
-        db=getDatabase(app);
-        onValue(ref(db,'babies'), snap=>{
-          const d=snap.val();
-          babies=d?Object.entries(d).map(([k,v])=>({...v,fbKey:k})):[];
-          if(!currentBabyId && babies.length>0) currentBabyId=babies[0].id;
-          renderBabyBar(); renderAll();
-        });
-        onValue(ref(db,'records'), snap=>{
-          const d=snap.val();
-          records=d?Object.entries(d).map(([k,v])=>({...v,fbKey:k})):[];
-          renderAll();
-          setSyncStatus('ok','已同步');
-        }, ()=>setSyncStatus('err','連線失敗'));
-      } catch{ setSyncStatus('err','連線失敗'); }
-    }
+  // ── Init ──
+  function init(){
+    setViewDateToToday();
+    renderDateNav();
+    buildBrandChips();
+    buildAvatarGrids();
+    buildGoalPresets();
+    loadGoal();
+    loadInventory();
+    setInterval(()=>{ renderSummary(); renderGoalBar(); },60000);
+    connectFirebase();
+  }
 
-    function setSyncStatus(s,t){
-      document.getElementById('syncDot').className='sync-dot '+s;
-      document.getElementById('syncText').textContent=t;
-    }
+  function setViewDateToToday(){
+    const n=new Date();
+    viewDate=new Date(n.getFullYear(),n.getMonth(),n.getDate());
+  }
 
-    // ── Date Nav ──
-    window.changeDay = function(delta) {
-      viewDate=new Date(viewDate.getTime()+delta*86400000);
-      renderDateNav(); renderAll();
-    }
-    window.goToToday = function() {
-      setViewDateToToday(); renderDateNav(); renderAll();
-    }
-
-    function isViewingToday() {
-      const n=new Date();
-      return viewDate.getFullYear()===n.getFullYear()&&viewDate.getMonth()===n.getMonth()&&viewDate.getDate()===n.getDate();
-    }
-
-    function renderDateNav() {
-      const today=new Date();
-      const todayMidnight=new Date(today.getFullYear(),today.getMonth(),today.getDate());
-      const diffDays=Math.round((viewDate-todayMidnight)/86400000);
-
-      let label,sub='';
-      if(diffDays===0){label='今天'; sub=viewDate.toLocaleDateString('zh-TW',{month:'long',day:'numeric',weekday:'short'});}
-      else if(diffDays===-1){label='昨天'; sub=viewDate.toLocaleDateString('zh-TW',{month:'long',day:'numeric',weekday:'short'});}
-      else{label=viewDate.toLocaleDateString('zh-TW',{month:'long',day:'numeric',weekday:'short'}); sub=diffDays<0?`${Math.abs(diffDays)} 天前`:'';}
-
-      document.getElementById('dateNavLabel').textContent=label;
-      document.getElementById('dateNavSub').textContent=sub!==label?sub:'';
-      document.getElementById('backTodayWrap').innerHTML=isViewingToday()?'':`<span class="date-nav-today" onclick="goToToday()">回到今天</span>`;
-      document.getElementById('nextDayBtn').disabled=isViewingToday();
-      document.getElementById('addBtn').style.display=isViewingToday()?'flex':'none';
-      document.getElementById('todayDate').textContent=today.toLocaleDateString('zh-TW',{month:'long',day:'numeric',weekday:'short'});
-    }
-
-    // ── Calendar ──
-    window.openCalendar = function() {
-      calDate=new Date(viewDate.getFullYear(),viewDate.getMonth(),1);
-      renderCalendar();
-      document.getElementById('calOverlay').classList.add('open');
-    }
-    window.handleCalOverlayClick = e=>{ if(e.target===document.getElementById('calOverlay')) closeCalendar(); }
-    function closeCalendar(){ document.getElementById('calOverlay').classList.remove('open'); }
-
-    window.changeCalMonth = function(delta) {
-      calDate=new Date(calDate.getFullYear(),calDate.getMonth()+delta,1);
-      renderCalendar();
-    }
-    window.calGoToday = function() {
-      const n=new Date();
-      calDate=new Date(n.getFullYear(),n.getMonth(),1);
-      renderCalendar();
-    }
-
-    function getRecordDates() {
-      // return Set of "YYYY-MM-DD" strings that have records for current baby
-      const s=new Set();
-      records.forEach(r=>{
-        if(r.babyId===currentBabyId){
-          const d=new Date(r.time);
-          s.add(`${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`);
-        }
+  function connectFirebase(){
+    try{
+      setSyncStatus('loading','連線中…');
+      const app=initializeApp(FIREBASE_CONFIG);
+      db=getDatabase(app);
+      onValue(ref(db,'babies'),snap=>{
+        const d=snap.val();
+        babies=d?Object.entries(d).map(([k,v])=>({...v,fbKey:k})):[];
+        if(!currentBabyId&&babies.length>0) currentBabyId=babies[0].id;
+        renderBabyBar(); renderAll();
       });
-      return s;
+      onValue(ref(db,'records'),snap=>{
+        const d=snap.val();
+        records=d?Object.entries(d).map(([k,v])=>({...v,fbKey:k})):[];
+        renderAll();
+        setSyncStatus('ok','已同步');
+      },()=>setSyncStatus('err','連線失敗'));
+    }catch{ setSyncStatus('err','連線失敗'); }
+  }
+
+  function setSyncStatus(s,t){
+    document.getElementById('syncDot').className='sync-dot '+s;
+    document.getElementById('syncText').textContent=t;
+  }
+
+  // ── Date Nav ──
+  window.changeDay=function(d){ viewDate=new Date(viewDate.getTime()+d*86400000); renderDateNav(); renderAll(); }
+  window.goToToday=function(){ setViewDateToToday(); renderDateNav(); renderAll(); }
+
+  function isViewingToday(){
+    const n=new Date();
+    return viewDate.getFullYear()===n.getFullYear()&&viewDate.getMonth()===n.getMonth()&&viewDate.getDate()===n.getDate();
+  }
+
+  function renderDateNav(){
+    const today=new Date();
+    const todayMid=new Date(today.getFullYear(),today.getMonth(),today.getDate());
+    const diff=Math.round((viewDate-todayMid)/86400000);
+    let label,sub='';
+    if(diff===0){label='今天';sub=viewDate.toLocaleDateString('zh-TW',{month:'long',day:'numeric',weekday:'short'});}
+    else if(diff===-1){label='昨天';sub=viewDate.toLocaleDateString('zh-TW',{month:'long',day:'numeric',weekday:'short'});}
+    else{label=viewDate.toLocaleDateString('zh-TW',{month:'long',day:'numeric',weekday:'short'});sub=diff<0?`${Math.abs(diff)} 天前`:''}
+    document.getElementById('dateNavLabel').textContent=label;
+    document.getElementById('dateNavSub').textContent=sub!==label?sub:'';
+    document.getElementById('backTodayWrap').innerHTML=isViewingToday()?'':`<span class="date-nav-today" onclick="goToToday()">回到今天</span>`;
+    document.getElementById('nextDayBtn').disabled=isViewingToday();
+    document.getElementById('addBtn').style.display=isViewingToday()?'flex':'none';
+    document.getElementById('todayDate').textContent=today.toLocaleDateString('zh-TW',{month:'long',day:'numeric',weekday:'short'});
+  }
+
+  // ── Calendar ──
+  window.openCalendar=function(){ calDate=new Date(viewDate.getFullYear(),viewDate.getMonth(),1); renderCalendar(); document.getElementById('calOverlay').classList.add('open'); }
+  window.handleCalOverlayClick=e=>{ if(e.target===document.getElementById('calOverlay')) closeCalendar(); }
+  function closeCalendar(){ document.getElementById('calOverlay').classList.remove('open'); }
+  window.changeCalMonth=function(d){ calDate=new Date(calDate.getFullYear(),calDate.getMonth()+d,1); renderCalendar(); }
+  window.calGoToday=function(){ const n=new Date(); calDate=new Date(n.getFullYear(),n.getMonth(),1); renderCalendar(); }
+
+  function getRecordDates(){
+    const s=new Set();
+    records.forEach(r=>{ if(r.babyId===currentBabyId){ const d=new Date(r.time); s.add(`${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`); } });
+    return s;
+  }
+
+  function renderCalendar(){
+    const year=calDate.getFullYear(),month=calDate.getMonth();
+    document.getElementById('calMonthLabel').textContent=`${year} 年 ${month+1} 月`;
+    const today=new Date();
+    const todayKey=`${today.getFullYear()}-${today.getMonth()}-${today.getDate()}`;
+    const selKey=`${viewDate.getFullYear()}-${viewDate.getMonth()}-${viewDate.getDate()}`;
+    const recDates=getRecordDates();
+    const firstDay=new Date(year,month,1).getDay();
+    const daysInMonth=new Date(year,month+1,0).getDate();
+    const daysInPrev=new Date(year,month,0).getDate();
+    let html='';
+    for(let i=firstDay-1;i>=0;i--) html+=`<div class="cal-day other-month"><span class="cal-day-num">${daysInPrev-i}</span></div>`;
+    for(let d=1;d<=daysInMonth;d++){
+      const key=`${year}-${month}-${d}`;
+      const isFuture=new Date(year,month,d)>today;
+      let cls='cal-day'+(key===todayKey?' today':'')+(key===selKey?' selected':'')+(recDates.has(key)?' has-data':'')+(isFuture?' other-month':'');
+      const click=isFuture?'':` onclick="calSelectDay(${year},${month},${d})"`;
+      html+=`<div class="${cls}"${click}><span class="cal-day-num">${d}</span></div>`;
     }
+    const remaining=42-(firstDay+daysInMonth);
+    for(let d=1;d<=remaining;d++) html+=`<div class="cal-day other-month"><span class="cal-day-num">${d}</span></div>`;
+    document.getElementById('calGrid').innerHTML=html;
+  }
 
-    function renderCalendar() {
-      const year=calDate.getFullYear(), month=calDate.getMonth();
-      document.getElementById('calMonthLabel').textContent=`${year} 年 ${month+1} 月`;
+  window.calSelectDay=function(y,m,d){ viewDate=new Date(y,m,d); renderDateNav(); renderAll(); closeCalendar(); }
 
-      const today=new Date();
-      const todayKey=`${today.getFullYear()}-${today.getMonth()}-${today.getDate()}`;
-      const selectedKey=`${viewDate.getFullYear()}-${viewDate.getMonth()}-${viewDate.getDate()}`;
-      const recordDates=getRecordDates();
+  // ── Goal ──
+  function loadGoal(){ const s=localStorage.getItem('baby_goal_ml'); goalMl=s?parseInt(s):0; }
+  function saveGoalToStorage(){ localStorage.setItem('baby_goal_ml',String(goalMl)); }
+  function buildGoalPresets(){
+    document.getElementById('goalPresets').innerHTML=GOAL_PRESETS.map(v=>
+      `<div class="goal-preset${v===goalMl?' selected':''}" onclick="selectGoalPreset(this,${v})">${v} ml</div>`
+    ).join('');
+  }
+  window.selectGoalPreset=function(el,v){ document.querySelectorAll('.goal-preset').forEach(e=>e.classList.remove('selected')); el.classList.add('selected'); document.getElementById('inputGoal').value=v; }
+  window.openGoalModal=function(){ document.getElementById('inputGoal').value=goalMl||''; buildGoalPresets(); document.getElementById('goalModalOverlay').classList.add('open'); }
+  window.closeGoalModal=function(){ document.getElementById('goalModalOverlay').classList.remove('open'); }
+  window.handleGoalOverlayClick=e=>{ if(e.target===document.getElementById('goalModalOverlay')) closeGoalModal(); }
+  window.saveGoal=function(){
+    const v=parseInt(document.getElementById('inputGoal').value);
+    if(!v||v<100){ showToast('⚠️ 請輸入至少 100 ml 的目標'); return; }
+    goalMl=v; saveGoalToStorage(); closeGoalModal(); renderGoalBar(); showToast('🎯 目標已設定！');
+  }
 
-      // First day of month weekday (0=Sun)
-      const firstDay=new Date(year,month,1).getDay();
-      // Days in month
-      const daysInMonth=new Date(year,month+1,0).getDate();
-      // Days in prev month
-      const daysInPrev=new Date(year,month,0).getDate();
+  function renderGoalBar(){
+    const total=getViewDateRecords().reduce((s,r)=>s+r.amount,0);
+    document.getElementById('goalCurrent').textContent=total;
+    if(!goalMl){ document.getElementById('goalTarget').textContent='—'; document.getElementById('goalBarFill').style.width='0%'; document.getElementById('goalStatusText').textContent='尚未設定目標'; document.getElementById('goalBadge').textContent=''; return; }
+    const pct=Math.min(100,Math.round(total/goalMl*100));
+    const done=total>=goalMl;
+    document.getElementById('goalTarget').textContent=goalMl;
+    const fill=document.getElementById('goalBarFill');
+    fill.style.width=pct+'%'; fill.className='goal-bar-fill'+(done?' done':'');
+    if(done){ document.getElementById('goalStatusText').textContent=`🎉 已達成！超出 ${total-goalMl} ml`; document.getElementById('goalBadge').textContent='達標 ✓'; document.getElementById('goalBadge').className='badge badge-done'; }
+    else{ document.getElementById('goalStatusText').textContent=`還差 ${goalMl-total} ml 達成（${pct}%）`; document.getElementById('goalBadge').textContent=`${pct}%`; document.getElementById('goalBadge').className='badge badge-progress'; }
+  }
 
-      let html='';
-      // Prev month filler
-      for(let i=firstDay-1;i>=0;i--){
-        const d=daysInPrev-i;
-        html+=`<div class="cal-day other-month"><span class="cal-day-num">${d}</span></div>`;
-      }
-      // Current month
-      for(let d=1;d<=daysInMonth;d++){
-        const key=`${year}-${month}-${d}`;
-        const isToday=key===todayKey;
-        const isSelected=key===selectedKey;
-        const hasData=recordDates.has(key);
-        const isFuture=new Date(year,month,d)>today;
-        let cls='cal-day';
-        if(isToday) cls+=' today';
-        if(isSelected) cls+=' selected';
-        if(hasData) cls+=' has-data';
-        if(isFuture) cls+=' other-month';
-        const click=isFuture?'':` onclick="calSelectDay(${year},${month},${d})"`;
-        html+=`<div class="${cls}"${click}><span class="cal-day-num">${d}</span></div>`;
-      }
-      // Next month filler — 永遠填滿 42 格（6 行）
-      const total=firstDay+daysInMonth;
-      const remaining=42-total;
-      for(let d=1;d<=remaining;d++){
-        html+=`<div class="cal-day other-month"><span class="cal-day-num">${d}</span></div>`;
-      }
-      document.getElementById('calGrid').innerHTML=html;
-    }
+  // ── Inventory ──
+  function loadInventory(){ try{ const s=localStorage.getItem('baby_inventory'); inventory=s?JSON.parse(s):{}; }catch{ inventory={}; } }
+  function saveInventoryToStorage(){ localStorage.setItem('baby_inventory',JSON.stringify(inventory)); }
 
-    window.calSelectDay = function(year,month,day) {
-      viewDate=new Date(year,month,day);
-      renderDateNav();
-      renderAll();
-      closeCalendar();
-    }
+  window.openInventoryModal=function(){
+    const list=document.getElementById('invBrandList');
+    list.innerHTML=BRANDS.map(b=>`
+      <div class="inv-brand-row">
+        <div class="inv-brand-name">${b}</div>
+        <input class="inv-brand-input" type="number" min="0" max="9999" step="1"
+          data-brand="${b}" value="${inventory[b]||''}" placeholder="0" />
+        <span class="inv-brand-unit">g</span>
+      </div>`).join('');
+    document.getElementById('inventoryModalOverlay').classList.add('open');
+  }
+  window.closeInventoryModal=function(){ document.getElementById('inventoryModalOverlay').classList.remove('open'); }
+  window.handleInvOverlayClick=e=>{ if(e.target===document.getElementById('inventoryModalOverlay')) closeInventoryModal(); }
+  window.saveInventory=function(){
+    document.querySelectorAll('.inv-brand-input').forEach(inp=>{
+      const brand=inp.dataset.brand, val=parseInt(inp.value);
+      if(val>0) inventory[brand]=val;
+      else delete inventory[brand];
+    });
+    saveInventoryToStorage();
+    closeInventoryModal();
+    renderInventory();
+    showToast('📦 庫存已更新！');
+  }
 
-    // ── Goal ──
-    function loadGoal(){ const s=localStorage.getItem('baby_goal_ml'); goalMl=s?parseInt(s):0; }
-    function saveGoalToStorage(){ localStorage.setItem('baby_goal_ml',String(goalMl)); }
+  function renderInventory(){
+    const el=document.getElementById('inventoryList');
+    const entries=Object.entries(inventory).filter(([,g])=>g>0);
+    if(entries.length===0){ el.innerHTML='<div class="inventory-empty">尚未設定庫存，點「管理庫存」新增</div>'; return; }
+    // find max for bar scaling
+    const maxG=Math.max(...entries.map(([,g])=>g));
+    el.innerHTML=entries.map(([brand,grams])=>{
+      const pct=Math.round(grams/maxG*100);
+      const low=grams<100;
+      return `
+        <div class="inventory-item">
+          <div class="inventory-brand">${escHtml(brand)}</div>
+          <div class="inventory-bar-wrap"><div class="inventory-bar-fill${low?' low':''}" style="width:${pct}%"></div></div>
+          <div class="inventory-grams${low?' low':''}">${grams}g${low?' ⚠️':''}</div>
+        </div>`;
+    }).join('');
+  }
 
-    function buildGoalPresets(){
-      document.getElementById('goalPresets').innerHTML=GOAL_PRESETS.map(v=>
-        `<div class="goal-preset${v===goalMl?' selected':''}" onclick="selectGoalPreset(this,${v})">${v} ml</div>`
-      ).join('');
-    }
-    window.selectGoalPreset=function(el,v){ document.querySelectorAll('.goal-preset').forEach(e=>e.classList.remove('selected')); el.classList.add('selected'); document.getElementById('inputGoal').value=v; }
-    window.openGoalModal=function(){ document.getElementById('inputGoal').value=goalMl||''; buildGoalPresets(); document.getElementById('goalModalOverlay').classList.add('open'); }
-    window.closeGoalModal=function(){ document.getElementById('goalModalOverlay').classList.remove('open'); }
-    window.handleGoalOverlayClick=e=>{ if(e.target===document.getElementById('goalModalOverlay')) closeGoalModal(); }
-    window.saveGoal=function(){
-      const v=parseInt(document.getElementById('inputGoal').value);
-      if(!v||v<100){ showToast('⚠️ 請輸入至少 100 ml 的目標'); return; }
-      goalMl=v; saveGoalToStorage(); closeGoalModal(); renderGoalBar(); showToast('🎯 目標已設定！');
-    }
+  // 新增紀錄後扣除庫存
+  function deductInventory(brand, amountMl){
+    if(!brand||!inventory[brand]) return;
+    const deductG=Math.round(amountMl/ML_PER_GRAM);
+    inventory[brand]=Math.max(0,inventory[brand]-deductG);
+    saveInventoryToStorage();
+    renderInventory();
+    if(inventory[brand]<100) showToast(`⚠️ ${brand} 庫存剩餘不足 100g，記得補貨！`);
+  }
 
-    function renderGoalBar(){
-      const total=getViewDateRecords().reduce((s,r)=>s+r.amount,0);
-      document.getElementById('goalCurrent').textContent=total;
-      if(!goalMl){
-        document.getElementById('goalTarget').textContent='—';
-        document.getElementById('goalBarFill').style.width='0%';
-        document.getElementById('goalStatusText').textContent='尚未設定目標';
-        document.getElementById('goalBadge').textContent='';
-        return;
-      }
-      const pct=Math.min(100,Math.round(total/goalMl*100));
-      const done=total>=goalMl;
-      document.getElementById('goalTarget').textContent=goalMl;
-      const fill=document.getElementById('goalBarFill');
-      fill.style.width=pct+'%';
-      fill.className='goal-bar-fill'+(done?' done':'');
-      if(done){
-        document.getElementById('goalStatusText').textContent=`🎉 已達成！超出 ${total-goalMl} ml`;
-        document.getElementById('goalBadge').textContent='達標 ✓';
-        document.getElementById('goalBadge').className='badge badge-done';
-      } else {
-        document.getElementById('goalStatusText').textContent=`還差 ${goalMl-total} ml 達成（${pct}%）`;
-        document.getElementById('goalBadge').textContent=`${pct}%`;
-        document.getElementById('goalBadge').className='badge badge-progress';
-      }
-    }
+  // 刪除紀錄後還原庫存
+  function restoreInventory(brand, amountMl){
+    if(!brand||brand==='母乳') return;
+    const restoreG=Math.round(amountMl/ML_PER_GRAM);
+    if(inventory[brand]!==undefined) inventory[brand]+=restoreG;
+    saveInventoryToStorage();
+    renderInventory();
+  }
 
-    // ── Render ──
-    function renderAll(){ renderSummary(); renderGoalBar(); renderList(); updateAddBtn(); }
+  // ── Render ──
+  function renderAll(){ renderSummary(); renderGoalBar(); renderInventory(); renderList(); updateAddBtn(); }
 
-    function updateAddBtn(){
-      const btn=document.getElementById('addBtn');
-      btn.disabled=!currentBabyId;
-      btn.textContent=currentBabyId?'＋ 新增餵奶紀錄':'＋ 請先新增寶寶';
-    }
+  function updateAddBtn(){
+    const btn=document.getElementById('addBtn');
+    btn.disabled=!currentBabyId;
+    btn.textContent=currentBabyId?'＋ 新增餵奶紀錄':'＋ 請先新增寶寶';
+  }
 
-    function getViewDateRecords(){
-      if(!currentBabyId) return [];
-      return records.filter(r=>{
-        if(r.babyId!==currentBabyId) return false;
-        const d=new Date(r.time);
-        return d.getFullYear()===viewDate.getFullYear()&&d.getMonth()===viewDate.getMonth()&&d.getDate()===viewDate.getDate();
-      });
-    }
+  function getViewDateRecords(){
+    if(!currentBabyId) return [];
+    return records.filter(r=>{
+      if(r.babyId!==currentBabyId) return false;
+      const d=new Date(r.time);
+      return d.getFullYear()===viewDate.getFullYear()&&d.getMonth()===viewDate.getMonth()&&d.getDate()===viewDate.getDate();
+    });
+  }
 
-    function renderSummary(){
-      const recs=getViewDateRecords();
-      const total=recs.reduce((s,r)=>s+r.amount,0);
-      const count=recs.length;
-      const avg=count>0?Math.round(total/count):0;
-      const baby=babies.find(b=>b.id===currentBabyId);
-      document.getElementById('totalAmount').textContent=total;
-      document.getElementById('totalCount').textContent=`共 ${count} 次`;
-      document.getElementById('feedCount').textContent=count;
-      document.getElementById('avgAmount').textContent=count>0?`平均 ${avg} ml`:'尚無資料';
-      document.getElementById('listHeader').textContent=`📋 ${baby?baby.name+' ':''}${isViewingToday()?'今日':'當日'}紀錄`;
-      const sorted=[...recs].sort((a,b)=>new Date(b.time)-new Date(a.time));
-      if(sorted.length===0){
-        document.getElementById('lastFeedTime').textContent='—';
-        document.getElementById('lastFeedAgo').textContent=isViewingToday()?'今天還沒餵奶':'無紀錄';
-      } else {
-        document.getElementById('lastFeedTime').textContent=formatTime(sorted[0].time);
-        document.getElementById('lastFeedAgo').textContent=isViewingToday()?timeAgo(sorted[0].time):'';
-      }
-    }
+  function renderSummary(){
+    const recs=getViewDateRecords();
+    const formulaRecs=recs.filter(r=>r.feedType!=='breast');
+    const breastRecs=recs.filter(r=>r.feedType==='breast');
+    const total=recs.reduce((s,r)=>s+r.amount,0);
+    const formulaTotal=formulaRecs.reduce((s,r)=>s+r.amount,0);
+    const breastTotal=breastRecs.reduce((s,r)=>s+r.amount,0);
+    const baby=babies.find(b=>b.id===currentBabyId);
+    document.getElementById('totalAmount').textContent=total;
+    document.getElementById('totalCount').textContent=`共 ${recs.length} 次`;
+    document.getElementById('formulaAmount').textContent=formulaTotal;
+    document.getElementById('formulaCount').textContent=`${formulaRecs.length} 次`;
+    document.getElementById('breastAmount').textContent=breastTotal;
+    document.getElementById('breastCount').textContent=`${breastRecs.length} 次`;
+    document.getElementById('listHeader').textContent=`📋 ${baby?baby.name+' ':''}${isViewingToday()?'今日':'當日'}紀錄`;
+  }
 
-    function renderList(){
-      const recs=getViewDateRecords().sort((a,b)=>new Date(b.time)-new Date(a.time));
-      const el=document.getElementById('recordsList');
-      if(!currentBabyId){ el.innerHTML=`<div class="empty-state"><div class="emoji">👶</div><p>請先點上方「＋」新增寶寶</p></div>`; return; }
-      if(recs.length===0){ el.innerHTML=`<div class="empty-state"><div class="emoji">🌙</div><p>${isViewingToday()?'今天還沒有餵奶紀錄<br>點上方按鈕新增！':'這天沒有餵奶紀錄'}</p></div>`; return; }
-      el.innerHTML=recs.map((r,i)=>`
+  function renderList(){
+    const recs=getViewDateRecords().sort((a,b)=>new Date(b.time)-new Date(a.time));
+    const el=document.getElementById('recordsList');
+    if(!currentBabyId){ el.innerHTML=`<div class="empty-state"><div class="emoji">👶</div><p>請先點上方「＋」新增寶寶</p></div>`; return; }
+    if(recs.length===0){ el.innerHTML=`<div class="empty-state"><div class="emoji">🌙</div><p>${isViewingToday()?'今天還沒有餵奶紀錄<br>點上方按鈕新增！':'這天沒有餵奶紀錄'}</p></div>`; return; }
+    el.innerHTML=recs.map((r,i)=>{
+      const isBreast=r.feedType==='breast';
+      const icon=isBreast?'🤱':'🍼';
+      const meta=isBreast?[r.note?'📝 '+escHtml(r.note):''].filter(Boolean).join('')
+        :[r.brand?'🏷️ '+escHtml(r.brand):'',r.note?'📝 '+escHtml(r.note):''].filter(Boolean).join('　');
+      return `
         <div class="record-card">
-          <div class="record-icon">🍼</div>
+          <div class="record-icon ${isBreast?'breast':'formula'}">${icon}</div>
           <div class="record-info">
             <div class="record-time">${formatTime(r.time)}<span class="record-nth">第 ${recs.length-i} 次</span></div>
-            <div class="record-amount">${r.amount} ml</div>
-            <div class="record-meta">${[r.brand?'🏷️ '+escHtml(r.brand):'',r.note?'📝 '+escHtml(r.note):''].filter(Boolean).join('　')}</div>
+            <div class="record-amount ${isBreast?'breast':'formula'}">${r.amount} ml　${isBreast?'🤱 母乳':'🍼 奶粉'}</div>
+            ${meta?`<div class="record-meta">${meta}</div>`:''}
           </div>
           <div class="record-actions">
             <button class="btn-icon btn-edit" onclick="openEditModal('${r.id}')">✏️</button>
             <button class="btn-icon btn-delete" onclick="askDelete('${r.id}')">🗑️</button>
           </div>
-        </div>`).join('');
-    }
+        </div>`;
+    }).join('');
+  }
 
-    // ── Baby Bar ──
-    function renderBabyBar(){
-      const bar=document.getElementById('babyBar');
-      const addBtn=bar.querySelector('.btn-add-baby');
-      bar.querySelectorAll('.baby-tab').forEach(el=>el.remove());
-      babies.forEach(b=>{
-        const tab=document.createElement('div');
-        tab.className='baby-tab'+(b.id===currentBabyId?' active':'');
-        tab.innerHTML=`<span>${b.avatar||'👶'}</span>${escHtml(b.name)}`;
-        tab.onclick=()=>{ currentBabyId=b.id; renderBabyBar(); renderAll(); };
-        tab.oncontextmenu=e=>{ e.preventDefault(); openBabyModal(b.id); };
-        bar.insertBefore(tab,addBtn);
-      });
-    }
+  // ── Baby Bar ──
+  function renderBabyBar(){
+    const bar=document.getElementById('babyBar');
+    const addBtn=bar.querySelector('.btn-add-baby');
+    bar.querySelectorAll('.baby-tab').forEach(el=>el.remove());
+    babies.forEach(b=>{
+      const tab=document.createElement('div');
+      tab.className='baby-tab'+(b.id===currentBabyId?' active':'');
+      tab.innerHTML=`<span>${b.avatar||'👶'}</span>${escHtml(b.name)}`;
+      tab.onclick=()=>{ currentBabyId=b.id; renderBabyBar(); renderAll(); };
+      tab.oncontextmenu=e=>{ e.preventDefault(); openBabyModal(b.id); };
+      bar.insertBefore(tab,addBtn);
+    });
+  }
 
-    // ── Brand chips ──
-    function buildBrandChips(){
-      document.getElementById('brandChips').innerHTML=BRANDS.map(b=>
-        `<div class="brand-chip" onclick="selectBrand(this,'${b}')">${b}</div>`
-      ).join('');
-    }
+  // ── Feed Type ──
+  window.setFeedType=function(type){
+    currentFeedType=type;
+    document.getElementById('typeFormula').className='feed-type-btn formula'+(type==='formula'?' active':'');
+    document.getElementById('typeBreast').className='feed-type-btn breast'+(type==='breast'?' active':'');
+    document.getElementById('brandSection').style.display=type==='breast'?'none':'block';
+  }
 
-    // ── Avatar grids (2 sections) ──
-    function buildAvatarGrids(){
-      document.getElementById('emojiGridBaby').innerHTML=AVATARS_BABY.map(e=>
-        `<div class="emoji-opt${e===selectedAvatar?' selected':''}" onclick="selectAvatar(this,'${e}')">${e}</div>`
-      ).join('');
-      document.getElementById('emojiGridOther').innerHTML=AVATARS_OTHER.map(e=>
-        `<div class="emoji-opt${e===selectedAvatar?' selected':''}" onclick="selectAvatar(this,'${e}')">${e}</div>`
-      ).join('');
-    }
+  // ── Brand chips ──
+  function buildBrandChips(){
+    document.getElementById('brandChips').innerHTML=BRANDS.map(b=>
+      `<div class="brand-chip" onclick="selectBrand(this,'${b}')">${b}</div>`
+    ).join('');
+  }
 
-    // ── Record Modal ──
-    window.openModal=function(){
-      if(!currentBabyId){ showToast('⚠️ 請先新增寶寶'); return; }
-      editingRecordId=null;
-      document.getElementById('modalTitle').textContent='新增餵奶紀錄';
-      document.getElementById('inputTime').value=toLocalISO(new Date());
-      setAmount(120);
-      document.getElementById('inputBrand').value='';
-      document.getElementById('inputNote').value='';
-      clearChips();
-      document.getElementById('modalOverlay').classList.add('open');
-    }
-    window.openEditModal=function(id){
-      const r=records.find(rec=>rec.id===id); if(!r) return;
-      editingRecordId=id;
-      document.getElementById('modalTitle').textContent='修改餵奶紀錄';
-      document.getElementById('inputTime').value=r.time.slice(0,16);
-      setAmount(r.amount);
-      document.getElementById('inputBrand').value=r.brand||'';
-      document.getElementById('inputNote').value=r.note||'';
-      clearChips();
-      document.querySelectorAll('.brand-chip').forEach(c=>{ if(c.textContent===r.brand) c.classList.add('selected'); });
-      document.getElementById('modalOverlay').classList.add('open');
-    }
-    window.closeModal=function(){ document.getElementById('modalOverlay').classList.remove('open'); editingRecordId=null; }
-    window.handleOverlayClick=e=>{ if(e.target===document.getElementById('modalOverlay')) closeModal(); }
-    function setAmount(v){ currentAmount=Math.max(10,Math.min(999,v)); document.getElementById('amountDisplay').textContent=currentAmount; }
-    window.changeAmount=d=>setAmount(currentAmount+d);
-    window.selectBrand=function(el,brand){ clearChips(); el.classList.add('selected'); document.getElementById('inputBrand').value=brand; }
-    function clearChips(){ document.querySelectorAll('.brand-chip').forEach(c=>c.classList.remove('selected')); }
-    window.saveRecord=async function(){
-      const time=document.getElementById('inputTime').value;
-      const brand=document.getElementById('inputBrand').value.trim();
-      const note=document.getElementById('inputNote').value.trim();
-      if(!time){ showToast('⚠️ 請填寫時間'); return; }
-      if(editingRecordId){
-        const r=records.find(rec=>rec.id===editingRecordId);
-        if(r?.fbKey) await set(ref(db,'records/'+r.fbKey),{id:r.id,babyId:r.babyId,time,amount:currentAmount,brand,note,createdAt:r.createdAt});
-        showToast('✅ 已更新紀錄');
-      } else {
-        await push(ref(db,'records'),{id:crypto.randomUUID(),babyId:currentBabyId,time,amount:currentAmount,brand,note,createdAt:new Date().toISOString()});
-        showToast('🍼 已新增紀錄');
-      }
-      closeModal();
-    }
+  // ── Avatar grids ──
+  function buildAvatarGrids(){
+    document.getElementById('emojiGridBaby').innerHTML=AVATARS_BABY.map(e=>
+      `<div class="emoji-opt${e===selectedAvatar?' selected':''}" onclick="selectAvatar(this,'${e}')">${e}</div>`).join('');
+    document.getElementById('emojiGridOther').innerHTML=AVATARS_OTHER.map(e=>
+      `<div class="emoji-opt${e===selectedAvatar?' selected':''}" onclick="selectAvatar(this,'${e}')">${e}</div>`).join('');
+  }
 
-    // ── Baby Modal ──
-    window.openBabyModal=function(babyId=null){
-      editingBabyId=babyId;
-      const baby=babyId?babies.find(b=>b.id===babyId):null;
-      document.getElementById('babyModalTitle').textContent=baby?`編輯「${baby.name}」`:'新增寶寶';
-      document.getElementById('inputBabyName').value=baby?baby.name:'';
-      selectedAvatar=baby?(baby.avatar||'👶'):'👶';
-      buildAvatarGrids();
-      document.getElementById('babyModalOverlay').classList.add('open');
-    }
-    window.closeBabyModal=function(){ document.getElementById('babyModalOverlay').classList.remove('open'); editingBabyId=null; }
-    window.handleBabyOverlayClick=e=>{ if(e.target===document.getElementById('babyModalOverlay')) closeBabyModal(); }
-    window.selectAvatar=function(el,emoji){
-      document.querySelectorAll('.emoji-opt').forEach(e=>e.classList.remove('selected'));
-      el.classList.add('selected'); selectedAvatar=emoji;
-    }
-    window.saveBaby=async function(){
-      const name=document.getElementById('inputBabyName').value.trim();
-      if(!name){ showToast('⚠️ 請輸入寶寶名字'); return; }
-      if(editingBabyId){
-        const b=babies.find(b=>b.id===editingBabyId);
-        if(b?.fbKey) await set(ref(db,'babies/'+b.fbKey),{id:b.id,name,avatar:selectedAvatar});
-        showToast('✅ 已更新寶寶資料');
-      } else {
-        const newBaby={id:crypto.randomUUID(),name,avatar:selectedAvatar};
-        await push(ref(db,'babies'),newBaby);
-        currentBabyId=newBaby.id;
-        showToast(`🎉 已新增 ${name}！`);
-      }
-      closeBabyModal();
-    }
+  // ── Record Modal ──
+  window.openModal=function(){
+    if(!currentBabyId){ showToast('⚠️ 請先新增寶寶'); return; }
+    editingRecordId=null;
+    document.getElementById('modalTitle').textContent='新增餵奶紀錄';
+    document.getElementById('inputTime').value=toLocalISO(new Date());
+    setAmount(120);
+    document.getElementById('inputBrand').value='';
+    document.getElementById('inputNote').value='';
+    clearChips();
+    setFeedType('formula');
+    document.getElementById('modalOverlay').classList.add('open');
+  }
 
-    // ── Delete ──
-    window.askDelete=id=>{ deletingId=id; document.getElementById('confirmOverlay').classList.add('open'); }
-    window.closeConfirm=()=>{ document.getElementById('confirmOverlay').classList.remove('open'); deletingId=null; }
-    window.confirmDelete=async function(){
-      if(!deletingId) return;
-      const r=records.find(rec=>rec.id===deletingId);
-      if(r?.fbKey) await remove(ref(db,'records/'+r.fbKey));
-      closeConfirm(); showToast('🗑️ 已刪除紀錄');
-    }
+  window.openEditModal=function(id){
+    const r=records.find(rec=>rec.id===id); if(!r) return;
+    editingRecordId=id;
+    document.getElementById('modalTitle').textContent='修改餵奶紀錄';
+    document.getElementById('inputTime').value=r.time.slice(0,16);
+    setAmount(r.amount);
+    document.getElementById('inputBrand').value=r.brand||'';
+    document.getElementById('inputNote').value=r.note||'';
+    clearChips();
+    document.querySelectorAll('.brand-chip').forEach(c=>{ if(c.textContent===r.brand) c.classList.add('selected'); });
+    setFeedType(r.feedType||'formula');
+    document.getElementById('modalOverlay').classList.add('open');
+  }
 
-    // ── Helpers ──
-    function toLocalISO(d){ return new Date(d-d.getTimezoneOffset()*60000).toISOString().slice(0,16); }
-    function formatTime(iso){ return new Date(iso).toLocaleTimeString('zh-TW',{hour:'2-digit',minute:'2-digit',hour12:false}); }
-    function timeAgo(iso){
-      const m=Math.floor((Date.now()-new Date(iso))/60000);
-      if(m<1) return '剛剛'; if(m<60) return `${m} 分鐘前`;
-      const h=Math.floor(m/60),rm=m%60;
-      return rm>0?`${h} 小時 ${rm} 分前`:`${h} 小時前`;
-    }
-    function escHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-    function showToast(msg){
-      const el=document.getElementById('toast');
-      el.textContent=msg; el.classList.add('show');
-      setTimeout(()=>el.classList.remove('show'),2500);
-    }
-    window.showToast=showToast;
+  window.closeModal=function(){ document.getElementById('modalOverlay').classList.remove('open'); editingRecordId=null; }
+  window.handleOverlayClick=e=>{ if(e.target===document.getElementById('modalOverlay')) closeModal(); }
 
-    init();
-    if('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(()=>{});
-  </script>
+  function setAmount(v){ currentAmount=Math.max(10,Math.min(999,v)); document.getElementById('amountDisplay').textContent=currentAmount; }
+  window.changeAmount=d=>setAmount(currentAmount+d);
+  window.selectBrand=function(el,brand){ clearChips(); el.classList.add('selected'); document.getElementById('inputBrand').value=brand; }
+  function clearChips(){ document.querySelectorAll('.brand-chip').forEach(c=>c.classList.remove('selected')); }
+
+  window.saveRecord=async function(){
+    const time=document.getElementById('inputTime').value;
+    const brand=currentFeedType==='breast'?'':document.getElementById('inputBrand').value.trim();
+    const note=document.getElementById('inputNote').value.trim();
+    if(!time){ showToast('⚠️ 請填寫時間'); return; }
+
+    if(editingRecordId){
+      // 修改：先還原舊庫存，再扣新的
+      const old=records.find(rec=>rec.id===editingRecordId);
+      if(old&&old.feedType!=='breast') restoreInventory(old.brand,old.amount);
+      if(old?.fbKey) await set(ref(db,'records/'+old.fbKey),{id:old.id,babyId:old.babyId,time,amount:currentAmount,brand,note,feedType:currentFeedType,createdAt:old.createdAt});
+      if(currentFeedType!=='breast') deductInventory(brand,currentAmount);
+      showToast('✅ 已更新紀錄');
+    } else {
+      await push(ref(db,'records'),{id:crypto.randomUUID(),babyId:currentBabyId,time,amount:currentAmount,brand,note,feedType:currentFeedType,createdAt:new Date().toISOString()});
+      if(currentFeedType!=='breast') deductInventory(brand,currentAmount);
+      showToast(currentFeedType==='breast'?'🤱 已新增母乳紀錄':'🍼 已新增奶粉紀錄');
+    }
+    closeModal();
+  }
+
+  // ── Baby Modal ──
+  window.openBabyModal=function(babyId=null){
+    editingBabyId=babyId;
+    const baby=babyId?babies.find(b=>b.id===babyId):null;
+    document.getElementById('babyModalTitle').textContent=baby?`編輯「${baby.name}」`:'新增寶寶';
+    document.getElementById('inputBabyName').value=baby?baby.name:'';
+    selectedAvatar=baby?(baby.avatar||'👶'):'👶';
+    buildAvatarGrids();
+    document.getElementById('babyModalOverlay').classList.add('open');
+  }
+  window.closeBabyModal=function(){ document.getElementById('babyModalOverlay').classList.remove('open'); editingBabyId=null; }
+  window.handleBabyOverlayClick=e=>{ if(e.target===document.getElementById('babyModalOverlay')) closeBabyModal(); }
+  window.selectAvatar=function(el,emoji){ document.querySelectorAll('.emoji-opt').forEach(e=>e.classList.remove('selected')); el.classList.add('selected'); selectedAvatar=emoji; }
+  window.saveBaby=async function(){
+    const name=document.getElementById('inputBabyName').value.trim();
+    if(!name){ showToast('⚠️ 請輸入寶寶名字'); return; }
+    if(editingBabyId){
+      const b=babies.find(b=>b.id===editingBabyId);
+      if(b?.fbKey) await set(ref(db,'babies/'+b.fbKey),{id:b.id,name,avatar:selectedAvatar});
+      showToast('✅ 已更新寶寶資料');
+    } else {
+      const newBaby={id:crypto.randomUUID(),name,avatar:selectedAvatar};
+      await push(ref(db,'babies'),newBaby);
+      currentBabyId=newBaby.id;
+      showToast(`🎉 已新增 ${name}！`);
+    }
+    closeBabyModal();
+  }
+
+  // ── Delete ──
+  window.askDelete=id=>{ deletingId=id; document.getElementById('confirmOverlay').classList.add('open'); }
+  window.closeConfirm=()=>{ document.getElementById('confirmOverlay').classList.remove('open'); deletingId=null; }
+  window.confirmDelete=async function(){
+    if(!deletingId) return;
+    const r=records.find(rec=>rec.id===deletingId);
+    if(r){ restoreInventory(r.brand,r.amount); }
+    if(r?.fbKey) await remove(ref(db,'records/'+r.fbKey));
+    closeConfirm(); showToast('🗑️ 已刪除紀錄');
+  }
+
+  // ── Helpers ──
+  function toLocalISO(d){ return new Date(d-d.getTimezoneOffset()*60000).toISOString().slice(0,16); }
+  function formatTime(iso){ return new Date(iso).toLocaleTimeString('zh-TW',{hour:'2-digit',minute:'2-digit',hour12:false}); }
+  function escHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+  function showToast(msg){
+    const el=document.getElementById('toast');
+    el.textContent=msg; el.classList.add('show');
+    setTimeout(()=>el.classList.remove('show'),2800);
+  }
+  window.showToast=showToast;
+
+  init();
+  if('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(()=>{});
+</script>
 </body>
 </html>
