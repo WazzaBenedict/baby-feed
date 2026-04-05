@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#f9e8e0" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="寶寶奶粉紀錄" />
+  <title>🍼 寶寶奶粉紀錄</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --cream: #fdf6f0;
+      --blush: #f9e8e0;
+      --rose: #e8a598;
+      --rose-deep: #d4756a;
+      --sage: #b5c9b7;
+      --sage-deep: #7da880;
+      --lavender: #d4c5e2;
+      --text: #3d2c28;
+      --text-soft: #8a6e6a;
+      --white: #ffffff;
+      --shadow: rgba(180,100,90,0.12);
+      --radius: 20px;
+      --radius-sm: 12px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+    body {
+      font-family: 'Noto Sans TC', sans-serif;
+      background: var(--cream);
+      color: var(--text);
+      min-height: 100vh;
+      max-width: 430px;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    /* ── TOP BAR ── */
+    .topbar {
+      background: var(--blush);
+      padding: 16px 20px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      border-bottom: 1px solid rgba(232,165,152,0.3);
+    }
+    .topbar-title {
+      font-family: 'Nunito', sans-serif;
+      font-size: 22px;
+      font-weight: 900;
+      color: var(--rose-deep);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .topbar-date {
+      font-size: 13px;
+      color: var(--text-soft);
+      font-weight: 500;
+    }
+
+    /* ── SUMMARY CARDS ── */
+    .summary-section {
+      padding: 20px 16px 8px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .card {
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 18px 16px;
+      box-shadow: 0 4px 16px var(--shadow);
+    }
+    .card-label {
+      font-size: 12px;
+      color: var(--text-soft);
+      font-weight: 500;
+      margin-bottom: 6px;
+      letter-spacing: 0.5px;
+    }
+    .card-value {
+      font-family: 'Nunito', sans-serif;
+      font-size: 32px;
+      font-weight: 900;
+      color: var(--rose-deep);
+      line-height: 1;
+    }
+    .card-unit {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-soft);
+      margin-left: 2px;
+    }
+    .card-sub {
+      font-size: 12px;
+      color: var(--text-soft);
+      margin-top: 4px;
+    }
+    .card.sage .card-value { color: var(--sage-deep); }
+
+    /* ── ADD BUTTON ── */
+    .add-btn-wrap {
+      padding: 16px 16px 8px;
+    }
+    .add-btn {
+      width: 100%;
+      background: linear-gradient(135deg, var(--rose-deep), #c45f54);
+      color: white;
+      border: none;
+      border-radius: var(--radius);
+      padding: 18px;
+      font-size: 18px;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      box-shadow: 0 6px 20px rgba(212,117,106,0.4);
+      transition: transform 0.1s, box-shadow 0.1s;
+      letter-spacing: 0.5px;
+    }
+    .add-btn:active { transform: scale(0.97); box-shadow: 0 2px 8px rgba(212,117,106,0.3); }
+
+    /* ── RECORDS LIST ── */
+    .section-header {
+      padding: 16px 16px 8px;
+      font-family: 'Nunito', sans-serif;
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .records-list {
+      padding: 0 16px 100px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .record-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 16px;
+      box-shadow: 0 2px 12px var(--shadow);
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      animation: fadeIn 0.25s ease;
+    }
+    @keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+    .record-icon {
+      width: 48px;
+      height: 48px;
+      background: var(--blush);
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      flex-shrink: 0;
+    }
+    .record-info { flex: 1; min-width: 0; }
+    .record-time {
+      font-family: 'Nunito', sans-serif;
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--text);
+    }
+    .record-amount {
+      font-size: 13px;
+      color: var(--rose-deep);
+      font-weight: 700;
+    }
+    .record-brand {
+      font-size: 12px;
+      color: var(--text-soft);
+      margin-top: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .record-note {
+      font-size: 12px;
+      color: var(--text-soft);
+      margin-top: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .record-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+    .btn-icon {
+      width: 38px;
+      height: 38px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      transition: transform 0.1s;
+    }
+    .btn-icon:active { transform: scale(0.9); }
+    .btn-edit { background: var(--blush); }
+    .btn-delete { background: #fde8e8; }
+
+    .empty-state {
+      text-align: center;
+      padding: 48px 24px;
+      color: var(--text-soft);
+    }
+    .empty-state .emoji { font-size: 48px; margin-bottom: 12px; }
+    .empty-state p { font-size: 15px; line-height: 1.6; }
+
+    /* ── MODAL OVERLAY ── */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(61,44,40,0.5);
+      z-index: 200;
+      align-items: flex-end;
+      justify-content: center;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: var(--cream);
+      border-radius: 28px 28px 0 0;
+      padding: 24px 20px 40px;
+      width: 100%;
+      max-width: 430px;
+      animation: slideUp 0.3s ease;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+    .modal-handle {
+      width: 40px;
+      height: 4px;
+      background: var(--rose);
+      border-radius: 2px;
+      margin: 0 auto 20px;
+      opacity: 0.5;
+    }
+    .modal-title {
+      font-family: 'Nunito', sans-serif;
+      font-size: 20px;
+      font-weight: 900;
+      color: var(--text);
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    /* ── FORM ── */
+    .form-group {
+      margin-bottom: 16px;
+    }
+    .form-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-soft);
+      margin-bottom: 8px;
+      letter-spacing: 0.5px;
+    }
+    .form-input {
+      width: 100%;
+      background: var(--white);
+      border: 2px solid transparent;
+      border-radius: var(--radius-sm);
+      padding: 14px 16px;
+      font-size: 16px;
+      font-family: 'Noto Sans TC', sans-serif;
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.2s;
+      box-shadow: 0 2px 8px var(--shadow);
+    }
+    .form-input:focus { border-color: var(--rose); }
+    .form-input::placeholder { color: #c8b0ac; }
+
+    .brand-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    .brand-chip {
+      background: var(--white);
+      border: 2px solid var(--blush);
+      border-radius: 20px;
+      padding: 6px 14px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-soft);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .brand-chip.selected, .brand-chip:active {
+      background: var(--rose);
+      border-color: var(--rose);
+      color: white;
+    }
+
+    .amount-stepper {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .stepper-btn {
+      width: 48px;
+      height: 48px;
+      background: var(--blush);
+      border: none;
+      border-radius: 14px;
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--rose-deep);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: transform 0.1s;
+    }
+    .stepper-btn:active { transform: scale(0.9); }
+    .stepper-display {
+      flex: 1;
+      text-align: center;
+      font-family: 'Nunito', sans-serif;
+      font-size: 28px;
+      font-weight: 900;
+      color: var(--rose-deep);
+    }
+    .stepper-unit { font-size: 14px; color: var(--text-soft); font-weight: 600; }
+
+    .modal-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 24px;
+    }
+    .btn-cancel {
+      flex: 1;
+      padding: 16px;
+      background: var(--blush);
+      border: none;
+      border-radius: var(--radius-sm);
+      font-size: 16px;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 800;
+      color: var(--text-soft);
+      cursor: pointer;
+    }
+    .btn-save {
+      flex: 2;
+      padding: 16px;
+      background: linear-gradient(135deg, var(--rose-deep), #c45f54);
+      border: none;
+      border-radius: var(--radius-sm);
+      font-size: 16px;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 800;
+      color: white;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(212,117,106,0.35);
+    }
+    .btn-save:active { transform: scale(0.97); }
+
+    /* ── DELETE CONFIRM ── */
+    .confirm-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(61,44,40,0.5);
+      z-index: 300;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .confirm-overlay.open { display: flex; }
+    .confirm-box {
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 28px 24px;
+      width: 100%;
+      max-width: 340px;
+      text-align: center;
+      animation: popIn 0.2s ease;
+    }
+    @keyframes popIn { from { transform:scale(0.9); opacity:0; } to { transform:scale(1); opacity:1; } }
+    .confirm-emoji { font-size: 36px; margin-bottom: 12px; }
+    .confirm-title { font-family: 'Nunito', sans-serif; font-size: 18px; font-weight: 800; margin-bottom: 8px; }
+    .confirm-sub { font-size: 14px; color: var(--text-soft); margin-bottom: 24px; }
+    .confirm-actions { display: flex; gap: 10px; }
+    .btn-confirm-cancel {
+      flex: 1; padding: 14px; background: var(--blush); border: none;
+      border-radius: var(--radius-sm); font-size: 15px; font-weight: 700;
+      font-family: 'Nunito', sans-serif; color: var(--text-soft); cursor: pointer;
+    }
+    .btn-confirm-delete {
+      flex: 1; padding: 14px; background: #e05252; border: none;
+      border-radius: var(--radius-sm); font-size: 15px; font-weight: 700;
+      font-family: 'Nunito', sans-serif; color: white; cursor: pointer;
+    }
+
+    /* ── TOAST ── */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: var(--text);
+      color: white;
+      padding: 12px 20px;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: 500;
+      z-index: 500;
+      transition: transform 0.3s ease;
+      white-space: nowrap;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+  </style>
+</head>
+<body>
+
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <div class="topbar-title">🍼 寶寶奶粉紀錄</div>
+    <div class="topbar-date" id="todayDate"></div>
+  </div>
+
+  <!-- SUMMARY -->
+  <div class="summary-section">
+    <div class="card">
+      <div class="card-label">📊 今日總奶量</div>
+      <div>
+        <span class="card-value" id="totalAmount">0</span>
+        <span class="card-unit">ml</span>
+      </div>
+      <div class="card-sub" id="totalCount">共 0 次</div>
+    </div>
+    <div class="card sage">
+      <div class="card-label">⏰ 最後餵奶</div>
+      <div class="card-value" id="lastFeedTime" style="font-size:20px;margin-top:4px">—</div>
+      <div class="card-sub" id="lastFeedAgo"></div>
+    </div>
+  </div>
+
+  <!-- ADD BUTTON -->
+  <div class="add-btn-wrap">
+    <button class="add-btn" onclick="openModal()">
+      <span>＋</span> 新增餵奶紀錄
+    </button>
+  </div>
+
+  <!-- RECORD LIST -->
+  <div class="section-header">📋 今日紀錄</div>
+  <div class="records-list" id="recordsList"></div>
+
+  <!-- ADD/EDIT MODAL -->
+  <div class="modal-overlay" id="modalOverlay" onclick="handleOverlayClick(event)">
+    <div class="modal">
+      <div class="modal-handle"></div>
+      <div class="modal-title" id="modalTitle">新增餵奶紀錄</div>
+
+      <div class="form-group">
+        <label class="form-label">⏰ 時間</label>
+        <input type="datetime-local" class="form-input" id="inputTime" />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">🍼 奶量（ml）</label>
+        <div class="amount-stepper">
+          <button class="stepper-btn" onclick="changeAmount(-10)">－</button>
+          <div class="stepper-display">
+            <span id="amountDisplay">120</span>
+            <span class="stepper-unit"> ml</span>
+          </div>
+          <button class="stepper-btn" onclick="changeAmount(+10)">＋</button>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">🏷️ 奶粉品牌</label>
+        <div class="brand-chips" id="brandChips">
+          <div class="brand-chip" onclick="selectBrand(this,'明治')">明治</div>
+          <div class="brand-chip" onclick="selectBrand(this,'亞培')">亞培</div>
+          <div class="brand-chip" onclick="selectBrand(this,'桂格')">桂格</div>
+          <div class="brand-chip" onclick="selectBrand(this,'雀巢')">雀巢</div>
+          <div class="brand-chip" onclick="selectBrand(this,'牛欄牌')">牛欄牌</div>
+          <div class="brand-chip" onclick="selectBrand(this,'其他')">其他</div>
+        </div>
+        <input type="text" class="form-input" id="inputBrand" placeholder="或直接輸入品牌名稱" />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">📝 備註（選填）</label>
+        <input type="text" class="form-input" id="inputNote" placeholder="例：喝得很好、有溢奶…" />
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn-cancel" onclick="closeModal()">取消</button>
+        <button class="btn-save" onclick="saveRecord()">💾 儲存</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- DELETE CONFIRM -->
+  <div class="confirm-overlay" id="confirmOverlay">
+    <div class="confirm-box">
+      <div class="confirm-emoji">🗑️</div>
+      <div class="confirm-title">確定要刪除？</div>
+      <div class="confirm-sub">這筆紀錄將永久刪除，無法還原。</div>
+      <div class="confirm-actions">
+        <button class="btn-confirm-cancel" onclick="closeConfirm()">取消</button>
+        <button class="btn-confirm-delete" onclick="confirmDelete()">刪除</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST -->
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const STORAGE_KEY = 'baby_feeding_records';
+    let records = [];
+    let editingId = null;
+    let deletingId = null;
+    let currentAmount = 120;
+
+    // ── Init ──
+    function init() {
+      loadRecords();
+      renderDate();
+      renderSummary();
+      renderList();
+      setInterval(renderSummary, 60000); // update "ago" every minute
+    }
+
+    function loadRecords() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        records = raw ? JSON.parse(raw) : [];
+      } catch { records = []; }
+    }
+
+    function saveRecords() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
+    }
+
+    // ── Date helpers ──
+    function toLocalISO(date) {
+      const offset = date.getTimezoneOffset() * 60000;
+      return new Date(date - offset).toISOString().slice(0, 16);
+    }
+
+    function isToday(isoStr) {
+      const d = new Date(isoStr);
+      const now = new Date();
+      return d.getFullYear() === now.getFullYear()
+          && d.getMonth() === now.getMonth()
+          && d.getDate() === now.getDate();
+    }
+
+    function formatTime(isoStr) {
+      return new Date(isoStr).toLocaleTimeString('zh-TW', { hour:'2-digit', minute:'2-digit', hour12: false });
+    }
+
+    function timeAgo(isoStr) {
+      const diff = Date.now() - new Date(isoStr).getTime();
+      const mins = Math.floor(diff / 60000);
+      if (mins < 1) return '剛剛';
+      if (mins < 60) return `${mins} 分鐘前`;
+      const hrs = Math.floor(mins / 60);
+      const rem = mins % 60;
+      return rem > 0 ? `${hrs} 小時 ${rem} 分前` : `${hrs} 小時前`;
+    }
+
+    function renderDate() {
+      const now = new Date();
+      const opts = { month:'long', day:'numeric', weekday:'short' };
+      document.getElementById('todayDate').textContent = now.toLocaleDateString('zh-TW', opts);
+    }
+
+    // ── Summary ──
+    function renderSummary() {
+      const todayRecs = records.filter(r => isToday(r.time));
+      const total = todayRecs.reduce((s, r) => s + r.amount, 0);
+      document.getElementById('totalAmount').textContent = total;
+      document.getElementById('totalCount').textContent = `共 ${todayRecs.length} 次`;
+
+      if (todayRecs.length === 0) {
+        document.getElementById('lastFeedTime').textContent = '—';
+        document.getElementById('lastFeedAgo').textContent = '今天還沒餵奶';
+        return;
+      }
+      const sorted = [...todayRecs].sort((a,b) => new Date(b.time) - new Date(a.time));
+      const last = sorted[0];
+      document.getElementById('lastFeedTime').textContent = formatTime(last.time);
+      document.getElementById('lastFeedAgo').textContent = timeAgo(last.time);
+    }
+
+    // ── List ──
+    function renderList() {
+      const todayRecs = records
+        .filter(r => isToday(r.time))
+        .sort((a,b) => new Date(b.time) - new Date(a.time));
+
+      const el = document.getElementById('recordsList');
+      if (todayRecs.length === 0) {
+        el.innerHTML = `<div class="empty-state"><div class="emoji">🌙</div><p>今天還沒有餵奶紀錄<br>點上方按鈕新增第一筆！</p></div>`;
+        return;
+      }
+      el.innerHTML = todayRecs.map(r => `
+        <div class="record-card" id="rc-${r.id}">
+          <div class="record-icon">🍼</div>
+          <div class="record-info">
+            <div class="record-time">${formatTime(r.time)}</div>
+            <div class="record-amount">${r.amount} ml</div>
+            ${r.brand ? `<div class="record-brand">🏷️ ${escHtml(r.brand)}</div>` : ''}
+            ${r.note ? `<div class="record-note">📝 ${escHtml(r.note)}</div>` : ''}
+          </div>
+          <div class="record-actions">
+            <button class="btn-icon btn-edit" onclick="openEditModal('${r.id}')" title="修改">✏️</button>
+            <button class="btn-icon btn-delete" onclick="askDelete('${r.id}')" title="刪除">🗑️</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function escHtml(str) {
+      return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    // ── Modal ──
+    function openModal() {
+      editingId = null;
+      document.getElementById('modalTitle').textContent = '新增餵奶紀錄';
+      document.getElementById('inputTime').value = toLocalISO(new Date());
+      setAmount(120);
+      document.getElementById('inputBrand').value = '';
+      document.getElementById('inputNote').value = '';
+      clearChips();
+      document.getElementById('modalOverlay').classList.add('open');
+    }
+
+    function openEditModal(id) {
+      const r = records.find(rec => rec.id === id);
+      if (!r) return;
+      editingId = id;
+      document.getElementById('modalTitle').textContent = '修改餵奶紀錄';
+      document.getElementById('inputTime').value = r.time.slice(0,16);
+      setAmount(r.amount);
+      document.getElementById('inputBrand').value = r.brand || '';
+      document.getElementById('inputNote').value = r.note || '';
+      clearChips();
+      // highlight matching chip
+      document.querySelectorAll('.brand-chip').forEach(chip => {
+        if (chip.textContent === r.brand) chip.classList.add('selected');
+      });
+      document.getElementById('modalOverlay').classList.add('open');
+    }
+
+    function closeModal() {
+      document.getElementById('modalOverlay').classList.remove('open');
+      editingId = null;
+    }
+
+    function handleOverlayClick(e) {
+      if (e.target === document.getElementById('modalOverlay')) closeModal();
+    }
+
+    function setAmount(val) {
+      currentAmount = Math.max(10, Math.min(500, val));
+      document.getElementById('amountDisplay').textContent = currentAmount;
+    }
+
+    function changeAmount(delta) {
+      setAmount(currentAmount + delta);
+    }
+
+    function selectBrand(el, brand) {
+      clearChips();
+      el.classList.add('selected');
+      document.getElementById('inputBrand').value = brand;
+    }
+
+    function clearChips() {
+      document.querySelectorAll('.brand-chip').forEach(c => c.classList.remove('selected'));
+    }
+
+    // ── Save ──
+    function saveRecord() {
+      const time = document.getElementById('inputTime').value;
+      const brand = document.getElementById('inputBrand').value.trim();
+      const note = document.getElementById('inputNote').value.trim();
+
+      if (!time) { showToast('⚠️ 請填寫時間'); return; }
+
+      if (editingId) {
+        const idx = records.findIndex(r => r.id === editingId);
+        if (idx !== -1) {
+          records[idx] = { ...records[idx], time, amount: currentAmount, brand, note };
+        }
+        showToast('✅ 已更新紀錄');
+      } else {
+        const newRecord = {
+          id: crypto.randomUUID(),
+          time,
+          amount: currentAmount,
+          brand,
+          note,
+          createdAt: new Date().toISOString()
+        };
+        records.unshift(newRecord);
+        showToast('🍼 已新增紀錄');
+      }
+
+      saveRecords();
+      closeModal();
+      renderSummary();
+      renderList();
+    }
+
+    // ── Delete ──
+    function askDelete(id) {
+      deletingId = id;
+      document.getElementById('confirmOverlay').classList.add('open');
+    }
+
+    function closeConfirm() {
+      document.getElementById('confirmOverlay').classList.remove('open');
+      deletingId = null;
+    }
+
+    function confirmDelete() {
+      if (!deletingId) return;
+      records = records.filter(r => r.id !== deletingId);
+      saveRecords();
+      closeConfirm();
+      renderSummary();
+      renderList();
+      showToast('🗑️ 已刪除紀錄');
+    }
+
+    // ── Toast ──
+    function showToast(msg) {
+      const el = document.getElementById('toast');
+      el.textContent = msg;
+      el.classList.add('show');
+      setTimeout(() => el.classList.remove('show'), 2500);
+    }
+
+    // ── Start ──
+    init();
+
+    // ── Service Worker ──
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('./sw.js').catch(() => {});
+    }
+  </script>
+</body>
+</html>
