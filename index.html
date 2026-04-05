@@ -22,6 +22,7 @@
       --sage-deep: #7da880;
       --lavender: #d4c5e2;
       --lavender-deep: #9b7ec8;
+      --gold: #f0c060;
       --text: #3d2c28;
       --text-soft: #8a6e6a;
       --white: #ffffff;
@@ -34,7 +35,6 @@
 
     /* ── TOP BAR ── */
     .topbar { background:var(--blush); padding:14px 16px 10px; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:100; border-bottom:1px solid rgba(232,165,152,0.3); gap:10px; }
-    .topbar-left { display:flex; align-items:center; gap:10px; flex:1; min-width:0; }
     .topbar-title { font-family:'Nunito',sans-serif; font-size:18px; font-weight:900; color:var(--rose-deep); white-space:nowrap; }
     .topbar-right { display:flex; flex-direction:column; align-items:flex-end; gap:2px; flex-shrink:0; }
     .topbar-date { font-size:12px; color:var(--text-soft); font-weight:500; }
@@ -45,17 +45,44 @@
     .sync-dot.loading { background:#f0c060; animation:pulse 1s infinite; }
     @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
 
-    /* ── BABY SELECTOR ── */
+    /* ── BABY BAR ── */
     .baby-bar { padding:12px 16px 0; display:flex; align-items:center; gap:8px; overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none; }
     .baby-bar::-webkit-scrollbar { display:none; }
     .baby-tab { display:flex; align-items:center; gap:6px; padding:8px 14px; background:var(--white); border:2px solid var(--blush); border-radius:20px; font-size:13px; font-weight:600; color:var(--text-soft); cursor:pointer; white-space:nowrap; transition:all 0.15s; flex-shrink:0; box-shadow:0 2px 8px var(--shadow); }
     .baby-tab.active { background:var(--rose-deep); border-color:var(--rose-deep); color:white; }
-    .baby-tab .avatar { font-size:16px; }
-    .btn-add-baby { width:38px; height:38px; background:var(--blush); border:2px dashed var(--rose); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:18px; color:var(--rose-deep); cursor:pointer; flex-shrink:0; transition:all 0.15s; }
+    .btn-add-baby { width:38px; height:38px; background:var(--blush); border:2px dashed var(--rose); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:18px; color:var(--rose-deep); cursor:pointer; flex-shrink:0; }
     .btn-add-baby:active { transform:scale(0.9); }
 
+    /* ── DATE NAV ── */
+    .date-nav { margin:14px 16px 0; background:var(--white); border-radius:var(--radius); padding:10px 14px; display:flex; align-items:center; justify-content:space-between; box-shadow:0 2px 10px var(--shadow); }
+    .date-nav-btn { width:36px; height:36px; background:var(--blush); border:none; border-radius:10px; font-size:18px; color:var(--rose-deep); cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:transform 0.1s; }
+    .date-nav-btn:active { transform:scale(0.9); }
+    .date-nav-btn:disabled { opacity:0.3; cursor:not-allowed; }
+    .date-nav-center { text-align:center; flex:1; }
+    .date-nav-label { font-family:'Nunito',sans-serif; font-size:16px; font-weight:800; color:var(--text); }
+    .date-nav-sub { font-size:11px; color:var(--text-soft); margin-top:2px; }
+    .date-nav-today { display:inline-block; margin-top:4px; font-size:11px; background:var(--rose); color:white; border-radius:8px; padding:2px 8px; cursor:pointer; font-weight:600; }
+
+    /* ── GOAL BAR ── */
+    .goal-section { margin:12px 16px 0; background:var(--white); border-radius:var(--radius); padding:14px 16px; box-shadow:0 2px 10px var(--shadow); }
+    .goal-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
+    .goal-title { font-size:13px; font-weight:700; color:var(--text-soft); display:flex; align-items:center; gap:6px; }
+    .goal-edit-btn { font-size:12px; color:var(--rose-deep); font-weight:600; cursor:pointer; background:var(--blush); border:none; border-radius:8px; padding:4px 10px; }
+    .goal-numbers { display:flex; align-items:baseline; gap:4px; margin-bottom:8px; }
+    .goal-current { font-family:'Nunito',sans-serif; font-size:28px; font-weight:900; color:var(--rose-deep); }
+    .goal-sep { font-size:16px; color:var(--text-soft); font-weight:500; }
+    .goal-target { font-family:'Nunito',sans-serif; font-size:18px; font-weight:700; color:var(--text-soft); }
+    .goal-unit { font-size:12px; color:var(--text-soft); margin-left:2px; }
+    .goal-bar-wrap { background:var(--blush); border-radius:10px; height:12px; overflow:hidden; }
+    .goal-bar-fill { height:100%; border-radius:10px; transition:width 0.6s cubic-bezier(0.4,0,0.2,1); background:linear-gradient(90deg, var(--rose), var(--rose-deep)); }
+    .goal-bar-fill.done { background:linear-gradient(90deg, var(--sage), var(--sage-deep)); }
+    .goal-status { margin-top:7px; font-size:12px; color:var(--text-soft); display:flex; align-items:center; justify-content:space-between; }
+    .goal-status .badge { font-size:11px; font-weight:700; padding:2px 8px; border-radius:8px; }
+    .badge-progress { background:#fff3e0; color:#e07a00; }
+    .badge-done { background:#e8f5e9; color:#388e3c; }
+
     /* ── SUMMARY CARDS ── */
-    .summary-section { padding:14px 16px 8px; display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; }
+    .summary-section { padding:12px 16px 8px; display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; }
     .card { background:var(--white); border-radius:var(--radius); padding:14px 12px; box-shadow:0 4px 16px var(--shadow); }
     .card-label { font-size:11px; color:var(--text-soft); font-weight:500; margin-bottom:6px; }
     .card-value { font-family:'Nunito',sans-serif; font-size:26px; font-weight:900; color:var(--rose-deep); line-height:1; }
@@ -64,33 +91,33 @@
     .card.lavender .card-value { color:var(--lavender-deep); }
     .card.sage .card-value { color:var(--sage-deep); font-size:18px; margin-top:4px; }
 
-    /* ── ADD BUTTON ── */
-    .add-btn-wrap { padding:12px 16px 8px; }
-    .add-btn { width:100%; background:linear-gradient(135deg,var(--rose-deep),#c45f54); color:white; border:none; border-radius:var(--radius); padding:16px; font-size:17px; font-family:'Nunito',sans-serif; font-weight:800; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:10px; box-shadow:0 6px 20px rgba(212,117,106,0.4); transition:transform 0.1s; }
+    /* ── ADD BUTTON (only show for today) ── */
+    .add-btn-wrap { padding:10px 16px 6px; }
+    .add-btn { width:100%; background:linear-gradient(135deg,var(--rose-deep),#c45f54); color:white; border:none; border-radius:var(--radius); padding:15px; font-size:17px; font-family:'Nunito',sans-serif; font-weight:800; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:10px; box-shadow:0 6px 20px rgba(212,117,106,0.4); transition:transform 0.1s; }
     .add-btn:active { transform:scale(0.97); }
-    .add-btn:disabled { opacity:0.5; cursor:not-allowed; }
+    .add-btn:disabled { opacity:0.4; cursor:not-allowed; }
 
     /* ── RECORDS ── */
-    .section-header { padding:12px 16px 8px; font-family:'Nunito',sans-serif; font-size:16px; font-weight:800; color:var(--text); display:flex; align-items:center; gap:8px; }
+    .section-header { padding:10px 16px 6px; font-family:'Nunito',sans-serif; font-size:15px; font-weight:800; color:var(--text); display:flex; align-items:center; gap:6px; }
     .records-list { padding:0 16px 100px; display:flex; flex-direction:column; gap:10px; }
     .record-card { background:var(--white); border-radius:var(--radius); padding:14px; box-shadow:0 2px 12px var(--shadow); display:flex; align-items:center; gap:12px; animation:fadeIn 0.25s ease; }
     @keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
-    .record-icon { width:46px; height:46px; background:var(--blush); border-radius:14px; display:flex; align-items:center; justify-content:center; font-size:22px; flex-shrink:0; }
+    .record-icon { width:44px; height:44px; background:var(--blush); border-radius:14px; display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0; }
     .record-info { flex:1; min-width:0; }
-    .record-time { font-family:'Nunito',sans-serif; font-size:17px; font-weight:800; color:var(--text); }
-    .record-nth { font-size:12px; color:var(--text-soft); font-weight:500; margin-left:4px; }
+    .record-time { font-family:'Nunito',sans-serif; font-size:16px; font-weight:800; color:var(--text); }
+    .record-nth { font-size:11px; color:var(--text-soft); font-weight:500; margin-left:4px; }
     .record-amount { font-size:13px; color:var(--rose-deep); font-weight:700; margin-top:2px; }
     .record-meta { font-size:12px; color:var(--text-soft); margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
     .record-actions { display:flex; flex-direction:column; gap:6px; flex-shrink:0; }
-    .btn-icon { width:36px; height:36px; border:none; border-radius:10px; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:15px; transition:transform 0.1s; }
+    .btn-icon { width:34px; height:34px; border:none; border-radius:10px; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:14px; transition:transform 0.1s; }
     .btn-icon:active { transform:scale(0.9); }
     .btn-edit { background:var(--blush); }
     .btn-delete { background:#fde8e8; }
-    .empty-state { text-align:center; padding:40px 24px; color:var(--text-soft); }
-    .empty-state .emoji { font-size:44px; margin-bottom:12px; }
+    .empty-state { text-align:center; padding:36px 24px; color:var(--text-soft); }
+    .empty-state .emoji { font-size:40px; margin-bottom:10px; }
     .empty-state p { font-size:14px; line-height:1.7; }
 
-    /* ── MODAL ── */
+    /* ── MODALS ── */
     .modal-overlay { display:none; position:fixed; inset:0; background:rgba(61,44,40,0.5); z-index:200; align-items:flex-end; justify-content:center; }
     .modal-overlay.open { display:flex; }
     .modal { background:var(--cream); border-radius:28px 28px 0 0; padding:24px 20px 40px; width:100%; max-width:430px; animation:slideUp 0.3s ease; max-height:92vh; overflow-y:auto; }
@@ -98,7 +125,7 @@
     .modal-handle { width:40px; height:4px; background:var(--rose); border-radius:2px; margin:0 auto 20px; opacity:0.5; }
     .modal-title { font-family:'Nunito',sans-serif; font-size:20px; font-weight:900; color:var(--text); margin-bottom:20px; text-align:center; }
     .form-group { margin-bottom:16px; }
-    .form-label { display:block; font-size:13px; font-weight:700; color:var(--text-soft); margin-bottom:8px; letter-spacing:0.3px; }
+    .form-label { display:block; font-size:13px; font-weight:700; color:var(--text-soft); margin-bottom:8px; }
     .form-input { width:100%; background:var(--white); border:2px solid transparent; border-radius:var(--radius-sm); padding:13px 16px; font-size:16px; font-family:'Noto Sans TC',sans-serif; color:var(--text); outline:none; transition:border-color 0.2s; box-shadow:0 2px 8px var(--shadow); }
     .form-input:focus { border-color:var(--rose); }
     .form-input::placeholder { color:#c8b0ac; }
@@ -113,11 +140,15 @@
     .modal-actions { display:flex; gap:10px; margin-top:24px; }
     .btn-cancel { flex:1; padding:15px; background:var(--blush); border:none; border-radius:var(--radius-sm); font-size:16px; font-family:'Nunito',sans-serif; font-weight:800; color:var(--text-soft); cursor:pointer; }
     .btn-save { flex:2; padding:15px; background:linear-gradient(135deg,var(--rose-deep),#c45f54); border:none; border-radius:var(--radius-sm); font-size:16px; font-family:'Nunito',sans-serif; font-weight:800; color:white; cursor:pointer; }
-
-    /* ── BABY MODAL ── */
     .emoji-grid { display:grid; grid-template-columns:repeat(6,1fr); gap:8px; margin-bottom:16px; }
     .emoji-opt { width:100%; aspect-ratio:1; background:var(--white); border:2px solid var(--blush); border-radius:12px; font-size:22px; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.15s; }
     .emoji-opt.selected { border-color:var(--rose-deep); background:var(--blush); }
+
+    /* ── GOAL MODAL ── */
+    .goal-preset-chips { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:12px; }
+    .goal-preset { background:var(--white); border:2px solid var(--blush); border-radius:14px; padding:6px 14px; font-size:13px; font-weight:600; color:var(--text-soft); cursor:pointer; transition:all 0.15s; }
+    .goal-preset.selected { background:var(--rose-deep); border-color:var(--rose-deep); color:white; }
+    .goal-hint { font-size:12px; color:var(--text-soft); margin-top:6px; line-height:1.6; }
 
     /* ── CONFIRM ── */
     .confirm-overlay { display:none; position:fixed; inset:0; background:rgba(61,44,40,0.5); z-index:300; align-items:center; justify-content:center; padding:24px; }
@@ -140,9 +171,7 @@
 
   <!-- TOP BAR -->
   <div class="topbar">
-    <div class="topbar-left">
-      <div class="topbar-title">🍼 奶粉紀錄</div>
-    </div>
+    <div class="topbar-title">🍼 寶寶奶粉紀錄</div>
     <div class="topbar-right">
       <div class="topbar-date" id="todayDate"></div>
       <div class="sync-status">
@@ -152,21 +181,52 @@
     </div>
   </div>
 
-  <!-- BABY SELECTOR BAR -->
+  <!-- BABY BAR -->
   <div class="baby-bar" id="babyBar">
-    <!-- tabs rendered by JS -->
     <div class="btn-add-baby" onclick="openBabyModal()" title="新增寶寶">＋</div>
   </div>
 
-  <!-- SUMMARY -->
+  <!-- DATE NAVIGATOR -->
+  <div class="date-nav">
+    <button class="date-nav-btn" id="prevDayBtn" onclick="changeDay(-1)">‹</button>
+    <div class="date-nav-center">
+      <div class="date-nav-label" id="dateNavLabel">—</div>
+      <div class="date-nav-sub" id="dateNavSub"></div>
+      <div id="backTodayWrap"></div>
+    </div>
+    <button class="date-nav-btn" id="nextDayBtn" onclick="changeDay(1)">›</button>
+  </div>
+
+  <!-- GOAL PROGRESS BAR -->
+  <div class="goal-section" id="goalSection">
+    <div class="goal-header">
+      <div class="goal-title">🎯 今日目標</div>
+      <button class="goal-edit-btn" onclick="openGoalModal()">設定目標</button>
+    </div>
+    <div class="goal-numbers">
+      <span class="goal-current" id="goalCurrent">0</span>
+      <span class="goal-sep">/</span>
+      <span class="goal-target" id="goalTarget">—</span>
+      <span class="goal-unit">ml</span>
+    </div>
+    <div class="goal-bar-wrap">
+      <div class="goal-bar-fill" id="goalBarFill" style="width:0%"></div>
+    </div>
+    <div class="goal-status">
+      <span id="goalStatusText" style="font-size:12px;color:var(--text-soft)">尚未設定目標</span>
+      <span class="badge" id="goalBadge"></span>
+    </div>
+  </div>
+
+  <!-- SUMMARY CARDS -->
   <div class="summary-section">
     <div class="card">
-      <div class="card-label">📊 今日總量</div>
+      <div class="card-label">📊 當日總量</div>
       <div><span class="card-value" id="totalAmount">0</span><span class="card-unit">ml</span></div>
       <div class="card-sub" id="totalCount">共 0 次</div>
     </div>
     <div class="card lavender">
-      <div class="card-label">🍼 今日次數</div>
+      <div class="card-label">🍼 餵奶次數</div>
       <div><span class="card-value" id="feedCount">0</span><span class="card-unit">次</span></div>
       <div class="card-sub" id="avgAmount">平均 — ml</div>
     </div>
@@ -183,7 +243,7 @@
   </div>
 
   <!-- RECORD LIST -->
-  <div class="section-header" id="listHeader">📋 今日紀錄</div>
+  <div class="section-header" id="listHeader">📋 紀錄</div>
   <div class="records-list" id="recordsList"></div>
 
   <!-- ── ADD/EDIT RECORD MODAL ── -->
@@ -191,7 +251,6 @@
     <div class="modal">
       <div class="modal-handle"></div>
       <div class="modal-title" id="modalTitle">新增餵奶紀錄</div>
-
       <div class="form-group">
         <label class="form-label">⏰ 時間</label>
         <input type="datetime-local" class="form-input" id="inputTime" />
@@ -220,7 +279,25 @@
     </div>
   </div>
 
-  <!-- ── ADD/EDIT BABY MODAL ── -->
+  <!-- ── GOAL MODAL ── -->
+  <div class="modal-overlay" id="goalModalOverlay" onclick="handleGoalOverlayClick(event)">
+    <div class="modal">
+      <div class="modal-handle"></div>
+      <div class="modal-title">🎯 設定每日目標</div>
+      <div class="form-group">
+        <label class="form-label">目標奶量（ml）</label>
+        <div class="goal-preset-chips" id="goalPresets"></div>
+        <input type="number" class="form-input" id="inputGoal" placeholder="或直接輸入數字" min="100" max="5000" step="50" />
+        <div class="goal-hint">💡 一般新生兒每天約 400–600 ml，3個月以上約 700–900 ml，實際請依醫師建議。</div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-cancel" onclick="closeGoalModal()">取消</button>
+        <button class="btn-save" onclick="saveGoal()">💾 儲存</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── BABY MODAL ── -->
   <div class="modal-overlay" id="babyModalOverlay" onclick="handleBabyOverlayClick(event)">
     <div class="modal">
       <div class="modal-handle"></div>
@@ -256,46 +333,42 @@
   <!-- TOAST -->
   <div class="toast" id="toast"></div>
 
-  <!-- Firebase SDK -->
   <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
     import { getDatabase, ref, push, set, remove, onValue } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
 
-    // ══════════════════════════════════════
-    //  Firebase 設定（已內建，不需手動輸入）
-    // ══════════════════════════════════════
     const FIREBASE_CONFIG = {
       databaseURL: "https://baby-feed-dbaf5-default-rtdb.asia-southeast1.firebasedatabase.app"
     };
 
-    // ══ 完整奶粉品牌清單 ══
-    const BRANDS = [
-      '愛他美','牛欄牌','明治','亞培','桂格',
-      '雀巢','美強生','惠氏','貝親','森永',
-      '豐力富','飛達兒','嘉寶','喜寶','其他'
-    ];
-
-    // ══ 寶寶頭像選項 ══
+    const BRANDS = ['愛他美','牛欄牌','明治','亞培','桂格','雀巢','美強生','惠氏','貝親','森永','豐力富','飛達兒','嘉寶','喜寶','其他'];
     const AVATARS = ['👶','🐣','🐥','🌸','⭐','🌈','🦋','🐧','🐨','🐼','🐸','🦊'];
+    const GOAL_PRESETS = [400, 500, 600, 700, 800, 900, 1000];
 
-    // ══ State ══
-    let records = [];
-    let babies = [];
+    // ── State ──
+    let records = [], babies = [];
     let currentBabyId = null;
-    let editingRecordId = null;
-    let editingBabyId = null;
-    let deletingId = null;
-    let currentAmount = 120;
-    let selectedAvatar = '👶';
+    let viewDate = new Date(); // the date currently being viewed
+    let editingRecordId = null, editingBabyId = null, deletingId = null;
+    let currentAmount = 120, selectedAvatar = '👶';
+    let goalMl = 0; // 0 = not set
     let db = null;
 
-    // ══ Init ══
+    // ── Init ──
     function init() {
-      renderDate();
+      setViewDateToToday();
+      renderDateNav();
       buildBrandChips();
       buildEmojiGrid();
-      setInterval(renderSummary, 60000);
+      buildGoalPresets();
+      loadGoal();
+      setInterval(() => { renderSummary(); renderGoalBar(); }, 60000);
       connectFirebase();
+    }
+
+    function setViewDateToToday() {
+      const n = new Date();
+      viewDate = new Date(n.getFullYear(), n.getMonth(), n.getDate());
     }
 
     function connectFirebase() {
@@ -303,38 +376,148 @@
         setSyncStatus('loading', '連線中…');
         const app = initializeApp(FIREBASE_CONFIG);
         db = getDatabase(app);
-
-        // 監聽寶寶列表
         onValue(ref(db, 'babies'), snap => {
           const d = snap.val();
-          babies = d ? Object.entries(d).map(([k,v]) => ({ ...v, fbKey:k })) : [];
+          babies = d ? Object.entries(d).map(([k,v]) => ({...v, fbKey:k})) : [];
           if (!currentBabyId && babies.length > 0) currentBabyId = babies[0].id;
           renderBabyBar();
           renderAll();
         });
-
-        // 監聽所有紀錄
         onValue(ref(db, 'records'), snap => {
           const d = snap.val();
-          records = d ? Object.entries(d).map(([k,v]) => ({ ...v, fbKey:k })) : [];
+          records = d ? Object.entries(d).map(([k,v]) => ({...v, fbKey:k})) : [];
           renderAll();
           setSyncStatus('ok', '已同步');
         }, () => setSyncStatus('err', '連線失敗'));
+      } catch { setSyncStatus('err', '連線失敗'); }
+    }
 
-      } catch(e) {
-        setSyncStatus('err', '連線失敗');
-        showToast('⚠️ 雲端連線失敗');
+    function setSyncStatus(s, t) {
+      document.getElementById('syncDot').className = 'sync-dot ' + s;
+      document.getElementById('syncText').textContent = t;
+    }
+
+    // ── Date Nav ──
+    function changeDay(delta) {
+      viewDate = new Date(viewDate.getTime() + delta * 86400000);
+      renderDateNav();
+      renderAll();
+    }
+    window.changeDay = changeDay;
+
+    window.goToToday = function() {
+      setViewDateToToday();
+      renderDateNav();
+      renderAll();
+    }
+
+    function isViewingToday() {
+      const n = new Date();
+      return viewDate.getFullYear()===n.getFullYear() && viewDate.getMonth()===n.getMonth() && viewDate.getDate()===n.getDate();
+    }
+
+    function renderDateNav() {
+      const today = new Date();
+      const diffMs = viewDate - new Date(today.getFullYear(), today.getMonth(), today.getDate());
+      const diffDays = Math.round(diffMs / 86400000);
+
+      let label, sub;
+      if (diffDays === 0) { label = '今天'; sub = viewDate.toLocaleDateString('zh-TW', {month:'long',day:'numeric',weekday:'short'}); }
+      else if (diffDays === -1) { label = '昨天'; sub = viewDate.toLocaleDateString('zh-TW', {month:'long',day:'numeric',weekday:'short'}); }
+      else { label = viewDate.toLocaleDateString('zh-TW', {month:'long',day:'numeric',weekday:'short'}); sub = diffDays < 0 ? `${Math.abs(diffDays)} 天前` : ''; }
+
+      document.getElementById('dateNavLabel').textContent = label;
+      document.getElementById('dateNavSub').textContent = sub !== label ? sub : '';
+      document.getElementById('backTodayWrap').innerHTML = isViewingToday() ? '' : `<span class="date-nav-today" onclick="goToToday()">回到今天</span>`;
+
+      // disable next if today
+      document.getElementById('nextDayBtn').disabled = isViewingToday();
+
+      // show/hide add button
+      const addBtn = document.getElementById('addBtn');
+      addBtn.style.display = isViewingToday() ? 'flex' : 'none';
+
+      document.getElementById('todayDate').textContent = today.toLocaleDateString('zh-TW', {month:'long',day:'numeric',weekday:'short'});
+    }
+
+    // ── Goal ──
+    function loadGoal() {
+      const saved = localStorage.getItem('baby_goal_ml');
+      goalMl = saved ? parseInt(saved) : 0;
+    }
+    function saveGoalToStorage() {
+      localStorage.setItem('baby_goal_ml', String(goalMl));
+    }
+
+    function buildGoalPresets() {
+      document.getElementById('goalPresets').innerHTML = GOAL_PRESETS.map(v =>
+        `<div class="goal-preset${v===goalMl?' selected':''}" onclick="selectGoalPreset(this,${v})">${v} ml</div>`
+      ).join('');
+    }
+
+    window.selectGoalPreset = function(el, v) {
+      document.querySelectorAll('.goal-preset').forEach(e => e.classList.remove('selected'));
+      el.classList.add('selected');
+      document.getElementById('inputGoal').value = v;
+    }
+
+    window.openGoalModal = function() {
+      document.getElementById('inputGoal').value = goalMl || '';
+      buildGoalPresets();
+      document.getElementById('goalModalOverlay').classList.add('open');
+    }
+    window.closeGoalModal = function() { document.getElementById('goalModalOverlay').classList.remove('open'); }
+    window.handleGoalOverlayClick = e => { if (e.target===document.getElementById('goalModalOverlay')) closeGoalModal(); }
+
+    window.saveGoal = function() {
+      const v = parseInt(document.getElementById('inputGoal').value);
+      if (!v || v < 100) { showToast('⚠️ 請輸入至少 100 ml 的目標'); return; }
+      goalMl = v;
+      saveGoalToStorage();
+      closeGoalModal();
+      renderGoalBar();
+      showToast('🎯 目標已設定！');
+    }
+
+    function renderGoalBar() {
+      const dayRecs = getViewDateRecords();
+      const total = dayRecs.reduce((s,r) => s+r.amount, 0);
+
+      document.getElementById('goalCurrent').textContent = total;
+
+      if (!goalMl) {
+        document.getElementById('goalTarget').textContent = '—';
+        document.getElementById('goalBarFill').style.width = '0%';
+        document.getElementById('goalStatusText').textContent = '尚未設定目標';
+        document.getElementById('goalBadge').textContent = '';
+        document.getElementById('goalBadge').className = 'badge';
+        return;
+      }
+
+      const pct = Math.min(100, Math.round(total / goalMl * 100));
+      const remaining = goalMl - total;
+      const done = total >= goalMl;
+
+      document.getElementById('goalTarget').textContent = goalMl;
+      const fill = document.getElementById('goalBarFill');
+      fill.style.width = pct + '%';
+      fill.className = 'goal-bar-fill' + (done ? ' done' : '');
+
+      if (done) {
+        document.getElementById('goalStatusText').textContent = `🎉 已達成目標！超出 ${total - goalMl} ml`;
+        document.getElementById('goalBadge').textContent = '達標 ✓';
+        document.getElementById('goalBadge').className = 'badge badge-done';
+      } else {
+        document.getElementById('goalStatusText').textContent = `還差 ${remaining} ml 達成目標（${pct}%）`;
+        document.getElementById('goalBadge').textContent = `${pct}%`;
+        document.getElementById('goalBadge').className = 'badge badge-progress';
       }
     }
 
-    function setSyncStatus(state, text) {
-      document.getElementById('syncDot').className = 'sync-dot ' + state;
-      document.getElementById('syncText').textContent = text;
-    }
-
-    // ══ Render ══
+    // ── Render ──
     function renderAll() {
       renderSummary();
+      renderGoalBar();
       renderList();
       updateAddBtn();
     }
@@ -345,78 +528,57 @@
       btn.textContent = currentBabyId ? '＋ 新增餵奶紀錄' : '＋ 請先新增寶寶';
     }
 
-    function renderDate() {
-      document.getElementById('todayDate').textContent =
-        new Date().toLocaleDateString('zh-TW', { month:'long', day:'numeric', weekday:'short' });
-    }
-
-    // ══ Baby Bar ══
-    function renderBabyBar() {
-      const bar = document.getElementById('babyBar');
-      const addBtn = bar.querySelector('.btn-add-baby');
-      // remove old tabs
-      bar.querySelectorAll('.baby-tab').forEach(el => el.remove());
-      // insert tabs before add button
-      babies.forEach(b => {
-        const tab = document.createElement('div');
-        tab.className = 'baby-tab' + (b.id === currentBabyId ? ' active' : '');
-        tab.innerHTML = `<span class="avatar">${b.avatar||'👶'}</span>${escHtml(b.name)}`;
-        tab.onclick = () => { currentBabyId = b.id; renderBabyBar(); renderAll(); };
-        tab.oncontextmenu = (e) => { e.preventDefault(); openBabyModal(b.id); };
-        bar.insertBefore(tab, addBtn);
+    function getViewDateRecords() {
+      if (!currentBabyId) return [];
+      return records.filter(r => {
+        if (r.babyId !== currentBabyId) return false;
+        const d = new Date(r.time);
+        return d.getFullYear()===viewDate.getFullYear() && d.getMonth()===viewDate.getMonth() && d.getDate()===viewDate.getDate();
       });
     }
 
-    // ══ Summary ══
     function renderSummary() {
-      const today = currentBabyId
-        ? records.filter(r => r.babyId === currentBabyId && isToday(r.time))
-        : [];
-      const total = today.reduce((s,r) => s + r.amount, 0);
-      const count = today.length;
-      const avg = count > 0 ? Math.round(total / count) : 0;
-      const baby = babies.find(b => b.id === currentBabyId);
+      const dayRecs = getViewDateRecords();
+      const total = dayRecs.reduce((s,r)=>s+r.amount,0);
+      const count = dayRecs.length;
+      const avg = count > 0 ? Math.round(total/count) : 0;
+      const baby = babies.find(b=>b.id===currentBabyId);
 
       document.getElementById('totalAmount').textContent = total;
       document.getElementById('totalCount').textContent = `共 ${count} 次`;
       document.getElementById('feedCount').textContent = count;
       document.getElementById('avgAmount').textContent = count > 0 ? `平均 ${avg} ml` : '尚無資料';
-      document.getElementById('listHeader').textContent =
-        `📋 ${baby ? baby.name + ' ' : ''}今日紀錄`;
+      document.getElementById('listHeader').textContent = `📋 ${baby?baby.name+' ':''}${isViewingToday()?'今日':'當日'}紀錄`;
 
-      if (count === 0) {
+      const sorted = [...dayRecs].sort((a,b)=>new Date(b.time)-new Date(a.time));
+      if (sorted.length === 0) {
         document.getElementById('lastFeedTime').textContent = '—';
-        document.getElementById('lastFeedAgo').textContent = '今天還沒餵奶';
-        return;
+        document.getElementById('lastFeedAgo').textContent = isViewingToday() ? '今天還沒餵奶' : '無紀錄';
+      } else {
+        document.getElementById('lastFeedTime').textContent = formatTime(sorted[0].time);
+        document.getElementById('lastFeedAgo').textContent = isViewingToday() ? timeAgo(sorted[0].time) : '';
       }
-      const last = [...today].sort((a,b) => new Date(b.time)-new Date(a.time))[0];
-      document.getElementById('lastFeedTime').textContent = formatTime(last.time);
-      document.getElementById('lastFeedAgo').textContent = timeAgo(last.time);
     }
 
-    // ══ List ══
     function renderList() {
-      const today = (currentBabyId
-        ? records.filter(r => r.babyId === currentBabyId && isToday(r.time))
-        : []
-      ).sort((a,b) => new Date(b.time)-new Date(a.time));
-
+      const dayRecs = getViewDateRecords().sort((a,b)=>new Date(b.time)-new Date(a.time));
       const el = document.getElementById('recordsList');
+
       if (!currentBabyId) {
-        el.innerHTML = `<div class="empty-state"><div class="emoji">👶</div><p>請先點上方「＋」新增寶寶<br>就可以開始記錄囉！</p></div>`;
+        el.innerHTML = `<div class="empty-state"><div class="emoji">👶</div><p>請先點上方「＋」新增寶寶</p></div>`;
         return;
       }
-      if (today.length === 0) {
-        el.innerHTML = `<div class="empty-state"><div class="emoji">🌙</div><p>今天還沒有餵奶紀錄<br>點上方按鈕新增第一筆！</p></div>`;
+      if (dayRecs.length === 0) {
+        el.innerHTML = `<div class="empty-state"><div class="emoji">🌙</div><p>${isViewingToday()?'今天還沒有餵奶紀錄<br>點上方按鈕新增第一筆！':'這天沒有餵奶紀錄'}</p></div>`;
         return;
       }
-      el.innerHTML = today.map((r,i) => `
+      el.innerHTML = dayRecs.map((r,i) => `
         <div class="record-card">
           <div class="record-icon">🍼</div>
           <div class="record-info">
-            <div class="record-time">${formatTime(r.time)}<span class="record-nth">第 ${today.length-i} 次</span></div>
+            <div class="record-time">${formatTime(r.time)}<span class="record-nth">第 ${dayRecs.length-i} 次</span></div>
             <div class="record-amount">${r.amount} ml</div>
-            <div class="record-meta">${[r.brand ? '🏷️ '+escHtml(r.brand) : '', r.note ? '📝 '+escHtml(r.note) : ''].filter(Boolean).join('　')}</div>
+            <div class="record-meta">${[r.brand?'🏷️ '+escHtml(r.brand):'', r.note?'📝 '+escHtml(r.note):''].filter(Boolean).join('　')}</div>
           </div>
           <div class="record-actions">
             <button class="btn-icon btn-edit" onclick="openEditModal('${r.id}')">✏️</button>
@@ -426,21 +588,35 @@
       `).join('');
     }
 
-    // ══ Brand chips ══
+    // ── Baby Bar ──
+    function renderBabyBar() {
+      const bar = document.getElementById('babyBar');
+      const addBtn = bar.querySelector('.btn-add-baby');
+      bar.querySelectorAll('.baby-tab').forEach(el=>el.remove());
+      babies.forEach(b => {
+        const tab = document.createElement('div');
+        tab.className = 'baby-tab'+(b.id===currentBabyId?' active':'');
+        tab.innerHTML = `<span>${b.avatar||'👶'}</span>${escHtml(b.name)}`;
+        tab.onclick = () => { currentBabyId = b.id; renderBabyBar(); renderAll(); };
+        tab.oncontextmenu = e => { e.preventDefault(); openBabyModal(b.id); };
+        bar.insertBefore(tab, addBtn);
+      });
+    }
+
+    // ── Brand chips ──
     function buildBrandChips() {
       document.getElementById('brandChips').innerHTML = BRANDS.map(b =>
         `<div class="brand-chip" onclick="selectBrand(this,'${b}')">${b}</div>`
       ).join('');
     }
 
-    // ══ Emoji grid ══
     function buildEmojiGrid() {
       document.getElementById('emojiGrid').innerHTML = AVATARS.map(e =>
         `<div class="emoji-opt${e===selectedAvatar?' selected':''}" onclick="selectAvatar(this,'${e}')">${e}</div>`
       ).join('');
     }
 
-    // ══ Record Modal ══
+    // ── Record Modal ──
     window.openModal = function() {
       if (!currentBabyId) { showToast('⚠️ 請先新增寶寶'); return; }
       editingRecordId = null;
@@ -454,117 +630,98 @@
     }
 
     window.openEditModal = function(id) {
-      const r = records.find(rec => rec.id === id);
+      const r = records.find(rec=>rec.id===id);
       if (!r) return;
       editingRecordId = id;
       document.getElementById('modalTitle').textContent = '修改餵奶紀錄';
       document.getElementById('inputTime').value = r.time.slice(0,16);
       setAmount(r.amount);
-      document.getElementById('inputBrand').value = r.brand || '';
-      document.getElementById('inputNote').value = r.note || '';
+      document.getElementById('inputBrand').value = r.brand||'';
+      document.getElementById('inputNote').value = r.note||'';
       clearChips();
-      document.querySelectorAll('.brand-chip').forEach(c => { if (c.textContent === r.brand) c.classList.add('selected'); });
+      document.querySelectorAll('.brand-chip').forEach(c=>{ if(c.textContent===r.brand) c.classList.add('selected'); });
       document.getElementById('modalOverlay').classList.add('open');
     }
 
-    window.closeModal = function() {
-      document.getElementById('modalOverlay').classList.remove('open');
-      editingRecordId = null;
-    }
-    window.handleOverlayClick = e => { if (e.target===document.getElementById('modalOverlay')) closeModal(); }
+    window.closeModal = function() { document.getElementById('modalOverlay').classList.remove('open'); editingRecordId = null; }
+    window.handleOverlayClick = e => { if(e.target===document.getElementById('modalOverlay')) closeModal(); }
 
-    function setAmount(v) { currentAmount = Math.max(10, Math.min(999, v)); document.getElementById('amountDisplay').textContent = currentAmount; }
-    window.changeAmount = d => setAmount(currentAmount + d);
-    window.selectBrand = function(el, brand) { clearChips(); el.classList.add('selected'); document.getElementById('inputBrand').value = brand; }
-    function clearChips() { document.querySelectorAll('.brand-chip').forEach(c => c.classList.remove('selected')); }
+    function setAmount(v) { currentAmount=Math.max(10,Math.min(999,v)); document.getElementById('amountDisplay').textContent=currentAmount; }
+    window.changeAmount = d => setAmount(currentAmount+d);
+    window.selectBrand = function(el,brand) { clearChips(); el.classList.add('selected'); document.getElementById('inputBrand').value=brand; }
+    function clearChips() { document.querySelectorAll('.brand-chip').forEach(c=>c.classList.remove('selected')); }
 
     window.saveRecord = async function() {
       const time = document.getElementById('inputTime').value;
       const brand = document.getElementById('inputBrand').value.trim();
       const note = document.getElementById('inputNote').value.trim();
       if (!time) { showToast('⚠️ 請填寫時間'); return; }
-
       if (editingRecordId) {
-        const r = records.find(rec => rec.id === editingRecordId);
-        if (r?.fbKey) await set(ref(db, 'records/' + r.fbKey), { ...r, time, amount: currentAmount, brand, note, fbKey: undefined });
+        const r = records.find(rec=>rec.id===editingRecordId);
+        if (r?.fbKey) await set(ref(db,'records/'+r.fbKey), {id:r.id,babyId:r.babyId,time,amount:currentAmount,brand,note,createdAt:r.createdAt});
         showToast('✅ 已更新紀錄');
       } else {
-        const newRec = { id: crypto.randomUUID(), babyId: currentBabyId, time, amount: currentAmount, brand, note, createdAt: new Date().toISOString() };
-        await push(ref(db, 'records'), newRec);
+        await push(ref(db,'records'), {id:crypto.randomUUID(),babyId:currentBabyId,time,amount:currentAmount,brand,note,createdAt:new Date().toISOString()});
         showToast('🍼 已新增紀錄');
       }
       closeModal();
     }
 
-    // ══ Baby Modal ══
-    window.openBabyModal = function(babyId = null) {
+    // ── Baby Modal ──
+    window.openBabyModal = function(babyId=null) {
       editingBabyId = babyId;
-      const baby = babyId ? babies.find(b => b.id === babyId) : null;
+      const baby = babyId ? babies.find(b=>b.id===babyId) : null;
       document.getElementById('babyModalTitle').textContent = baby ? `編輯「${baby.name}」` : '新增寶寶';
       document.getElementById('inputBabyName').value = baby ? baby.name : '';
-      selectedAvatar = baby ? (baby.avatar || '👶') : '👶';
+      selectedAvatar = baby ? (baby.avatar||'👶') : '👶';
       buildEmojiGrid();
       document.getElementById('babyModalOverlay').classList.add('open');
     }
-    window.closeBabyModal = function() {
-      document.getElementById('babyModalOverlay').classList.remove('open');
-      editingBabyId = null;
-    }
-    window.handleBabyOverlayClick = e => { if (e.target===document.getElementById('babyModalOverlay')) closeBabyModal(); }
-    window.selectAvatar = function(el, emoji) {
-      document.querySelectorAll('.emoji-opt').forEach(e => e.classList.remove('selected'));
-      el.classList.add('selected');
-      selectedAvatar = emoji;
-    }
+    window.closeBabyModal = function() { document.getElementById('babyModalOverlay').classList.remove('open'); editingBabyId=null; }
+    window.handleBabyOverlayClick = e => { if(e.target===document.getElementById('babyModalOverlay')) closeBabyModal(); }
+    window.selectAvatar = function(el,emoji) { document.querySelectorAll('.emoji-opt').forEach(e=>e.classList.remove('selected')); el.classList.add('selected'); selectedAvatar=emoji; }
     window.saveBaby = async function() {
       const name = document.getElementById('inputBabyName').value.trim();
       if (!name) { showToast('⚠️ 請輸入寶寶名字'); return; }
-
       if (editingBabyId) {
-        const b = babies.find(b => b.id === editingBabyId);
-        if (b?.fbKey) await set(ref(db, 'babies/' + b.fbKey), { id: b.id, name, avatar: selectedAvatar });
+        const b = babies.find(b=>b.id===editingBabyId);
+        if (b?.fbKey) await set(ref(db,'babies/'+b.fbKey), {id:b.id,name,avatar:selectedAvatar});
         showToast('✅ 已更新寶寶資料');
       } else {
-        const newBaby = { id: crypto.randomUUID(), name, avatar: selectedAvatar };
-        const pushed = await push(ref(db, 'babies'), newBaby);
+        const newBaby = {id:crypto.randomUUID(),name,avatar:selectedAvatar};
+        await push(ref(db,'babies'), newBaby);
         currentBabyId = newBaby.id;
         showToast(`🎉 已新增 ${name}！`);
       }
       closeBabyModal();
     }
 
-    // ══ Delete ══
-    window.askDelete = id => { deletingId = id; document.getElementById('confirmOverlay').classList.add('open'); }
-    window.closeConfirm = () => { document.getElementById('confirmOverlay').classList.remove('open'); deletingId = null; }
+    // ── Delete ──
+    window.askDelete = id => { deletingId=id; document.getElementById('confirmOverlay').classList.add('open'); }
+    window.closeConfirm = () => { document.getElementById('confirmOverlay').classList.remove('open'); deletingId=null; }
     window.confirmDelete = async function() {
       if (!deletingId) return;
-      const r = records.find(rec => rec.id === deletingId);
-      if (r?.fbKey) await remove(ref(db, 'records/' + r.fbKey));
+      const r = records.find(rec=>rec.id===deletingId);
+      if (r?.fbKey) await remove(ref(db,'records/'+r.fbKey));
       closeConfirm();
       showToast('🗑️ 已刪除紀錄');
     }
 
-    // ══ Helpers ══
-    function toLocalISO(d) { return new Date(d - d.getTimezoneOffset()*60000).toISOString().slice(0,16); }
-    function isToday(iso) {
-      const d = new Date(iso), n = new Date();
-      return d.getFullYear()===n.getFullYear() && d.getMonth()===n.getMonth() && d.getDate()===n.getDate();
-    }
-    function formatTime(iso) { return new Date(iso).toLocaleTimeString('zh-TW', { hour:'2-digit', minute:'2-digit', hour12:false }); }
+    // ── Helpers ──
+    function toLocalISO(d) { return new Date(d-d.getTimezoneOffset()*60000).toISOString().slice(0,16); }
+    function formatTime(iso) { return new Date(iso).toLocaleTimeString('zh-TW',{hour:'2-digit',minute:'2-digit',hour12:false}); }
     function timeAgo(iso) {
-      const m = Math.floor((Date.now()-new Date(iso))/60000);
-      if (m < 1) return '剛剛';
-      if (m < 60) return `${m} 分鐘前`;
-      const h = Math.floor(m/60), rm = m%60;
-      return rm > 0 ? `${h} 小時 ${rm} 分前` : `${h} 小時前`;
+      const m=Math.floor((Date.now()-new Date(iso))/60000);
+      if(m<1) return '剛剛';
+      if(m<60) return `${m} 分鐘前`;
+      const h=Math.floor(m/60),rm=m%60;
+      return rm>0?`${h} 小時 ${rm} 分前`:`${h} 小時前`;
     }
     function escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-
     function showToast(msg) {
-      const el = document.getElementById('toast');
-      el.textContent = msg;
-      el.classList.add('show');
-      setTimeout(() => el.classList.remove('show'), 2500);
+      const el=document.getElementById('toast');
+      el.textContent=msg; el.classList.add('show');
+      setTimeout(()=>el.classList.remove('show'),2500);
     }
     window.showToast = showToast;
 
