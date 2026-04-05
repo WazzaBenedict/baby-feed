@@ -174,11 +174,16 @@
 
     /* ── INVENTORY MANAGE MODAL ── */
     .inv-brand-list{display:flex;flex-direction:column;gap:10px;margin-bottom:8px;}
-    .inv-brand-row{background:var(--white);border-radius:var(--radius-sm);padding:12px 14px;display:flex;align-items:center;gap:10px;box-shadow:0 2px 8px var(--shadow);}
-    .inv-brand-name{font-size:14px;font-weight:600;color:var(--text);flex:1;}
-    .inv-brand-input{width:90px;padding:8px 10px;border:2px solid var(--blush);border-radius:10px;font-size:15px;font-family:'Nunito',sans-serif;font-weight:700;color:var(--rose-deep);text-align:center;outline:none;}
+    .inv-brand-row{background:var(--white);border-radius:var(--radius-sm);padding:12px 14px;box-shadow:0 2px 8px var(--shadow);}
+    .inv-brand-name{font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px;}
+    .inv-brand-fields{display:flex;align-items:center;gap:8px;}
+    .inv-field-group{display:flex;align-items:center;gap:4px;flex:1;}
+    .inv-field-label{font-size:11px;color:var(--text-soft);font-weight:600;white-space:nowrap;}
+    .inv-brand-input{width:100%;padding:8px 10px;border:2px solid var(--blush);border-radius:10px;font-size:15px;font-family:'Nunito',sans-serif;font-weight:700;color:var(--rose-deep);text-align:center;outline:none;}
     .inv-brand-input:focus{border-color:var(--rose-deep);}
-    .inv-brand-unit{font-size:12px;color:var(--text-soft);font-weight:600;}
+    .inv-brand-unit{font-size:12px;color:var(--text-soft);font-weight:600;white-space:nowrap;}
+    .inv-multiply{font-size:16px;color:var(--text-soft);font-weight:700;flex-shrink:0;}
+    .inv-result{font-size:12px;color:var(--sage-deep);font-weight:700;margin-top:6px;text-align:right;}
     .inv-hint{font-size:12px;color:var(--text-soft);line-height:1.6;margin-top:8px;}
 
     /* ── AVATAR GRID ── */
@@ -372,7 +377,7 @@
     <div class="modal-handle"></div>
     <div class="modal-title">📦 管理奶粉庫存</div>
     <div class="inv-brand-list" id="invBrandList"></div>
-    <div class="inv-hint">💡 輸入目前家中剩餘的奶粉克數。每次新增奶粉紀錄時，系統會依照沖泡比例自動扣除（預設每 30ml 扣 1g）。</div>
+    <div class="inv-hint">💡 請輸入每罐克數與目前罐數，系統會自動計算總庫存（g）。每次新增奶粉紀錄時自動扣除（每 30ml 扣 1g）。</div>
     <div class="modal-actions">
       <button class="btn-cancel" onclick="closeInventoryModal()">取消</button>
       <button class="btn-save" onclick="saveInventory()">💾 儲存</button>
@@ -601,26 +606,91 @@
   }
 
   // ── Inventory ──
+  // 各品牌預設每罐克數（依台灣市售常見規格）
+  const DEFAULT_GRAMS_PER_CAN = {
+    '愛他美': 800,
+    '牛欄牌': 900,
+    '明治':   800,
+    '亞培':   820,
+    '桂格':   900,
+    '雀巢':   800,
+    '美強生': 900,
+    '惠氏':   800,
+    '貝親':   850,
+    '森永':   800,
+    '豐力富': 900,
+    '飛達兒': 400,
+    '嘉寶':   400,
+    '喜寶':   800,
+    '其他':   400,
+  };
+
   function loadInventory(){ try{ const s=localStorage.getItem('baby_inventory'); inventory=s?JSON.parse(s):{}; }catch{ inventory={}; } }
   function saveInventoryToStorage(){ localStorage.setItem('baby_inventory',JSON.stringify(inventory)); }
 
   window.openInventoryModal=function(){
     const list=document.getElementById('invBrandList');
-    list.innerHTML=BRANDS.map(b=>`
-      <div class="inv-brand-row">
-        <div class="inv-brand-name">${b}</div>
-        <input class="inv-brand-input" type="number" min="0" max="9999" step="1"
-          data-brand="${b}" value="${inventory[b]||''}" placeholder="0" />
-        <span class="inv-brand-unit">g</span>
-      </div>`).join('');
+    // inventory[brand] = { gramsPerCan: number, grams: number }
+    list.innerHTML=BRANDS.map(b=>{
+      const entry=inventory[b]||{};
+      // 優先用已儲存的每罐克數，否則用品牌預設值
+      const gramsPerCan=entry.gramsPerCan || DEFAULT_GRAMS_PER_CAN[b] || 400;
+      const currentGrams=entry.grams||0;
+      const currentCans=currentGrams>0?(currentGrams/gramsPerCan).toFixed(1):'';
+      return `
+        <div class="inv-brand-row">
+          <div class="inv-brand-name">${b}</div>
+          <div class="inv-brand-fields">
+            <div class="inv-field-group">
+              <span class="inv-field-label">每罐</span>
+              <input class="inv-brand-input" type="number" min="1" max="9999" step="1"
+                data-brand="${b}" data-field="percan"
+                value="${gramsPerCan}" placeholder="${DEFAULT_GRAMS_PER_CAN[b]||400}"
+                oninput="updateInvResult('${b}')" />
+              <span class="inv-brand-unit">g</span>
+            </div>
+            <span class="inv-multiply">×</span>
+            <div class="inv-field-group">
+              <input class="inv-brand-input" type="number" min="0" max="99" step="0.5"
+                data-brand="${b}" data-field="cans"
+                value="${currentCans}" placeholder="0"
+                oninput="updateInvResult('${b}')" />
+              <span class="inv-brand-unit">罐</span>
+            </div>
+          </div>
+          <div class="inv-result" id="invResult-${b}">
+            ${currentGrams>0?`= ${currentGrams} g`:'（每罐 ${gramsPerCan}g）'}
+          </div>
+        </div>`;
+    }).join('');
     document.getElementById('inventoryModalOverlay').classList.add('open');
   }
   window.closeInventoryModal=function(){ document.getElementById('inventoryModalOverlay').classList.remove('open'); }
   window.handleInvOverlayClick=e=>{ if(e.target===document.getElementById('inventoryModalOverlay')) closeInventoryModal(); }
+
+  // 即時預覽換算結果
+  window.updateInvResult=function(brand){
+    const perCanEl=document.querySelector(`[data-brand="${brand}"][data-field="percan"]`);
+    const cansEl=document.querySelector(`[data-brand="${brand}"][data-field="cans"]`);
+    const perCan=parseFloat(perCanEl?.value)||0;
+    const cans=parseFloat(cansEl?.value)||0;
+    const totalG=Math.round(perCan*cans);
+    const resultEl=document.getElementById(`invResult-${brand}`);
+    if(resultEl){
+      if(totalG>0) resultEl.textContent=`= ${totalG} g`;
+      else resultEl.textContent=perCan>0?`（每罐 ${perCan}g）`:'';
+    }
+  }
+
   window.saveInventory=function(){
-    document.querySelectorAll('.inv-brand-input').forEach(inp=>{
-      const brand=inp.dataset.brand, val=parseInt(inp.value);
-      if(val>0) inventory[brand]=val;
+    BRANDS.forEach(brand=>{
+      const perCanEl=document.querySelector(`[data-brand="${brand}"][data-field="percan"]`);
+      const cansEl=document.querySelector(`[data-brand="${brand}"][data-field="cans"]`);
+      if(!perCanEl||!cansEl) return;
+      const perCan=parseFloat(perCanEl.value)||0;
+      const cans=parseFloat(cansEl.value)||0;
+      const totalG=Math.round(perCan*cans);
+      if(totalG>0) inventory[brand]={ gramsPerCan: perCan, grams: totalG };
       else delete inventory[brand];
     });
     saveInventoryToStorage();
@@ -631,18 +701,26 @@
 
   function renderInventory(){
     const el=document.getElementById('inventoryList');
-    const entries=Object.entries(inventory).filter(([,g])=>g>0);
+    // 支援新格式 {gramsPerCan, grams} 和舊格式 number
+    const entries=Object.entries(inventory).filter(([,v])=>{
+      const g=typeof v==='object'?v.grams:v;
+      return g>0;
+    });
     if(entries.length===0){ el.innerHTML='<div class="inventory-empty">尚未設定庫存，點「管理庫存」新增</div>'; return; }
-    // find max for bar scaling
-    const maxG=Math.max(...entries.map(([,g])=>g));
-    el.innerHTML=entries.map(([brand,grams])=>{
+    const maxG=Math.max(...entries.map(([,v])=>typeof v==='object'?v.grams:v));
+    el.innerHTML=entries.map(([brand,v])=>{
+      const grams=typeof v==='object'?v.grams:v;
+      const perCan=typeof v==='object'?v.gramsPerCan:null;
       const pct=Math.round(grams/maxG*100);
       const low=grams<100;
+      const cansLeft=perCan?`約 ${(grams/perCan).toFixed(1)} 罐`:'';
       return `
         <div class="inventory-item">
           <div class="inventory-brand">${escHtml(brand)}</div>
           <div class="inventory-bar-wrap"><div class="inventory-bar-fill${low?' low':''}" style="width:${pct}%"></div></div>
-          <div class="inventory-grams${low?' low':''}">${grams}g${low?' ⚠️':''}</div>
+          <div class="inventory-grams${low?' low':''}" style="min-width:80px;text-align:right">
+            ${grams}g${cansLeft?`<br><span style="font-size:10px;font-weight:500">${cansLeft}</span>`:''}${low?' ⚠️':''}
+          </div>
         </div>`;
     }).join('');
   }
@@ -651,17 +729,22 @@
   function deductInventory(brand, amountMl){
     if(!brand||!inventory[brand]) return;
     const deductG=Math.round(amountMl/ML_PER_GRAM);
-    inventory[brand]=Math.max(0,inventory[brand]-deductG);
+    const v=inventory[brand];
+    if(typeof v==='object') v.grams=Math.max(0,v.grams-deductG);
+    else inventory[brand]=Math.max(0,v-deductG);
     saveInventoryToStorage();
     renderInventory();
-    if(inventory[brand]<100) showToast(`⚠️ ${brand} 庫存剩餘不足 100g，記得補貨！`);
+    const remaining=typeof inventory[brand]==='object'?inventory[brand].grams:inventory[brand];
+    if(remaining<100) showToast(`⚠️ ${brand} 庫存剩餘不足 100g，記得補貨！`);
   }
 
   // 刪除紀錄後還原庫存
   function restoreInventory(brand, amountMl){
-    if(!brand||brand==='母乳') return;
+    if(!brand||brand==='母乳'||!inventory[brand]) return;
     const restoreG=Math.round(amountMl/ML_PER_GRAM);
-    if(inventory[brand]!==undefined) inventory[brand]+=restoreG;
+    const v=inventory[brand];
+    if(typeof v==='object') v.grams+=restoreG;
+    else inventory[brand]+=restoreG;
     saveInventoryToStorage();
     renderInventory();
   }
