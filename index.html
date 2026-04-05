@@ -63,8 +63,8 @@
     .cal-month-label{font-family:'Nunito',sans-serif;font-size:17px;font-weight:900;color:var(--text);}
     .cal-weekdays{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:6px;}
     .cal-weekday{text-align:center;font-size:11px;font-weight:700;color:var(--text-soft);padding:4px 0;}
-    .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;}
-    .cal-day{aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:12px;cursor:pointer;border:2px solid transparent;transition:all 0.15s;position:relative;}
+    .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);grid-template-rows:repeat(6,44px);gap:4px;}
+    .cal-day{display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:12px;cursor:pointer;border:2px solid transparent;transition:all 0.15s;position:relative;}
     .cal-day:active{transform:scale(0.9);}
     .cal-day.empty{cursor:default;}
     .cal-day.other-month{opacity:0.3;}
@@ -550,9 +550,9 @@
         const click=isFuture?'':` onclick="calSelectDay(${year},${month},${d})"`;
         html+=`<div class="${cls}"${click}><span class="cal-day-num">${d}</span></div>`;
       }
-      // Next month filler to complete grid
+      // Next month filler — 永遠填滿 42 格（6 行）
       const total=firstDay+daysInMonth;
-      const remaining=(7-total%7)%7;
+      const remaining=42-total;
       for(let d=1;d<=remaining;d++){
         html+=`<div class="cal-day other-month"><span class="cal-day-num">${d}</span></div>`;
       }
