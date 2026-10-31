@@ -2,13 +2,16 @@
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <meta name="theme-color" content="#f9e8e0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#f9e8e0" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#2b2120" media="(prefers-color-scheme: dark)" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <meta name="apple-mobile-web-app-title" content="寶寶奶粉紀錄" />
   <title>🍼 寶寶奶粉紀錄</title>
   <link rel="manifest" href="manifest.json" />
+  <link rel="icon" type="image/png" href="icon-192.png" />
+  <link rel="apple-touch-icon" href="icon-192.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet" />
   <style>
@@ -19,12 +22,23 @@
       --sky:#b8ddf0;--sky-deep:#4a9fc4;
       --text:#3d2c28;--text-soft:#8a6e6a;--white:#fff;
       --shadow:rgba(180,100,90,0.12);--radius:20px;--radius-sm:12px;
+      --breast-bg:#e8f4e8;--danger-bg:#fde8e8;--warn:#e07a00;--warn-bg:#fff3e0;
+    }
+    @media (prefers-color-scheme: dark){
+      :root{
+        --cream:#1e1817;--blush:#3a2b29;--rose:#c98579;--rose-deep:#ee8f82;
+        --sage:#5d7560;--sage-deep:#94c497;--lavender-deep:#b9a0e0;
+        --text:#f4e7e3;--text-soft:#b8a29d;--white:#2a2221;
+        --shadow:rgba(0,0,0,0.35);
+        --breast-bg:#2a3a2b;--danger-bg:#4a2626;--warn:#ffb060;--warn-bg:#4a3520;
+      }
     }
     *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
-    body{font-family:'Noto Sans TC',sans-serif;background:var(--cream);color:var(--text);min-height:100vh;max-width:430px;margin:0 auto;}
+    html{background:var(--cream);}
+    body{font-family:'Noto Sans TC',sans-serif;background:var(--cream);color:var(--text);min-height:100vh;max-width:430px;margin:0 auto;padding-bottom:env(safe-area-inset-bottom);}
 
     /* ── TOP BAR ── */
-    .topbar{background:var(--blush);padding:14px 16px 10px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;border-bottom:1px solid rgba(232,165,152,0.3);}
+    .topbar{background:var(--blush);padding:calc(14px + env(safe-area-inset-top)) 16px 10px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;border-bottom:1px solid rgba(232,165,152,0.3);}
     .topbar-title{font-family:'Nunito',sans-serif;font-size:18px;font-weight:900;color:var(--rose-deep);}
     .topbar-right{display:flex;flex-direction:column;align-items:flex-end;gap:2px;}
     .topbar-date{font-size:12px;color:var(--text-soft);font-weight:500;}
@@ -39,6 +53,7 @@
     .baby-bar::-webkit-scrollbar{display:none;}
     .baby-tab{display:flex;align-items:center;gap:6px;padding:8px 14px;background:var(--white);border:2px solid var(--blush);border-radius:20px;font-size:13px;font-weight:600;color:var(--text-soft);cursor:pointer;white-space:nowrap;transition:all 0.15s;flex-shrink:0;box-shadow:0 2px 8px var(--shadow);}
     .baby-tab.active{background:var(--rose-deep);border-color:var(--rose-deep);color:white;}
+    .baby-edit{font-size:11px;margin-left:2px;opacity:0.85;}
     .btn-add-baby{width:38px;height:38px;background:var(--blush);border:2px dashed var(--rose);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--rose-deep);cursor:pointer;flex-shrink:0;}
 
     /* ── DATE NAV ── */
@@ -88,22 +103,8 @@
     .goal-bar-fill.done{background:linear-gradient(90deg,var(--sage),var(--sage-deep));}
     .goal-status{margin-top:7px;display:flex;align-items:center;justify-content:space-between;}
     .badge{font-size:11px;font-weight:700;padding:2px 8px;border-radius:8px;}
-    .badge-progress{background:#fff3e0;color:#e07a00;}.badge-done{background:#e8f5e9;color:#388e3c;}
+    .badge-progress{background:var(--warn-bg);color:var(--warn);}.badge-done{background:#e8f5e9;color:#388e3c;}
 
-    /* ── INVENTORY SECTION ── */
-    .inventory-section{margin:12px 16px 0;background:var(--white);border-radius:var(--radius);padding:14px 16px;box-shadow:0 2px 10px var(--shadow);}
-    .inventory-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
-    .inventory-title{font-size:13px;font-weight:700;color:var(--text-soft);}
-    .inventory-manage-btn{font-size:12px;color:var(--rose-deep);font-weight:600;cursor:pointer;background:var(--blush);border:none;border-radius:8px;padding:4px 10px;}
-    .inventory-list{display:flex;flex-direction:column;gap:8px;}
-    .inventory-item{display:flex;align-items:center;gap:10px;}
-    .inventory-brand{font-size:13px;font-weight:600;color:var(--text);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-    .inventory-bar-wrap{flex:2;background:var(--blush);border-radius:6px;height:8px;overflow:hidden;}
-    .inventory-bar-fill{height:100%;border-radius:6px;background:linear-gradient(90deg,var(--gold),var(--gold-deep));transition:width 0.5s ease;}
-    .inventory-bar-fill.low{background:linear-gradient(90deg,#f08080,#e05252);}
-    .inventory-grams{font-size:12px;font-weight:700;color:var(--text-soft);white-space:nowrap;min-width:48px;text-align:right;}
-    .inventory-grams.low{color:#e05252;}
-    .inventory-empty{font-size:13px;color:var(--text-soft);text-align:center;padding:8px 0;}
 
     /* ── SUMMARY CARDS ── */
     .summary-section{padding:12px 16px 8px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
@@ -122,15 +123,16 @@
 
     /* ── RECORDS ── */
     .section-header{padding:10px 16px 6px;font-family:'Nunito',sans-serif;font-size:15px;font-weight:800;color:var(--text);}
-    .records-list{padding:0 16px 100px;display:flex;flex-direction:column;gap:10px;}
+    .records-list{padding:0 16px 16px;display:flex;flex-direction:column;gap:10px;}
     .record-card{background:var(--white);border-radius:var(--radius);padding:14px;box-shadow:0 2px 12px var(--shadow);display:flex;align-items:center;gap:12px;animation:fadeIn 0.25s ease;}
     @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
     .record-icon{width:44px;height:44px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
     .record-icon.formula{background:var(--blush);}
-    .record-icon.breast{background:#e8f4e8;}
+    .record-icon.breast{background:var(--breast-bg);}
     .record-info{flex:1;min-width:0;}
     .record-time{font-family:'Nunito',sans-serif;font-size:16px;font-weight:800;color:var(--text);}
     .record-nth{font-size:11px;color:var(--text-soft);font-weight:500;margin-left:4px;}
+    .record-gap{font-size:11px;color:var(--text-soft);font-weight:500;margin-left:6px;opacity:0.8;}
     .record-amount{font-size:13px;font-weight:700;margin-top:2px;}
     .record-amount.formula{color:var(--rose-deep);}
     .record-amount.breast{color:var(--sage-deep);}
@@ -138,7 +140,7 @@
     .record-actions{display:flex;flex-direction:column;gap:6px;flex-shrink:0;}
     .btn-icon{width:34px;height:34px;border:none;border-radius:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:transform 0.1s;}
     .btn-icon:active{transform:scale(0.9);}
-    .btn-edit{background:var(--blush);}.btn-delete{background:#fde8e8;}
+    .btn-edit{background:var(--blush);}.btn-delete{background:var(--danger-bg);}
     .empty-state{text-align:center;padding:36px 24px;color:var(--text-soft);}
     .empty-state .emoji{font-size:40px;margin-bottom:10px;}
     .empty-state p{font-size:14px;line-height:1.7;}
@@ -147,7 +149,7 @@
     .feed-type-toggle{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:4px;}
     .feed-type-btn{padding:12px;border:2px solid var(--blush);border-radius:var(--radius-sm);background:var(--white);font-size:14px;font-family:'Noto Sans TC',sans-serif;font-weight:700;color:var(--text-soft);cursor:pointer;text-align:center;transition:all 0.15s;display:flex;align-items:center;justify-content:center;gap:6px;}
     .feed-type-btn.active.formula{background:var(--blush);border-color:var(--rose-deep);color:var(--rose-deep);}
-    .feed-type-btn.active.breast{background:#e8f4e8;border-color:var(--sage-deep);color:var(--sage-deep);}
+    .feed-type-btn.active.breast{background:var(--breast-bg);border-color:var(--sage-deep);color:var(--sage-deep);}
 
     /* ── MODALS ── */
     .modal-overlay{display:none;position:fixed;inset:0;background:rgba(61,44,40,0.5);z-index:200;align-items:flex-end;justify-content:center;}
@@ -172,19 +174,6 @@
     .btn-cancel{flex:1;padding:15px;background:var(--blush);border:none;border-radius:var(--radius-sm);font-size:16px;font-family:'Nunito',sans-serif;font-weight:800;color:var(--text-soft);cursor:pointer;}
     .btn-save{flex:2;padding:15px;background:linear-gradient(135deg,var(--rose-deep),#c45f54);border:none;border-radius:var(--radius-sm);font-size:16px;font-family:'Nunito',sans-serif;font-weight:800;color:white;cursor:pointer;}
 
-    /* ── INVENTORY MANAGE MODAL ── */
-    .inv-brand-list{display:flex;flex-direction:column;gap:10px;margin-bottom:8px;}
-    .inv-brand-row{background:var(--white);border-radius:var(--radius-sm);padding:12px 14px;box-shadow:0 2px 8px var(--shadow);}
-    .inv-brand-name{font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px;}
-    .inv-brand-fields{display:flex;align-items:center;gap:8px;}
-    .inv-field-group{display:flex;align-items:center;gap:4px;flex:1;}
-    .inv-field-label{font-size:11px;color:var(--text-soft);font-weight:600;white-space:nowrap;}
-    .inv-brand-input{width:100%;padding:8px 10px;border:2px solid var(--blush);border-radius:10px;font-size:15px;font-family:'Nunito',sans-serif;font-weight:700;color:var(--rose-deep);text-align:center;outline:none;}
-    .inv-brand-input:focus{border-color:var(--rose-deep);}
-    .inv-brand-unit{font-size:12px;color:var(--text-soft);font-weight:600;white-space:nowrap;}
-    .inv-multiply{font-size:16px;color:var(--text-soft);font-weight:700;flex-shrink:0;}
-    .inv-result{font-size:12px;color:var(--sage-deep);font-weight:700;margin-top:6px;text-align:right;}
-    .inv-hint{font-size:12px;color:var(--text-soft);line-height:1.6;margin-top:8px;}
 
     /* ── AVATAR GRID ── */
     .avatar-section-label{font-size:11px;font-weight:700;color:var(--text-soft);letter-spacing:0.5px;margin:12px 0 6px;}
@@ -211,8 +200,48 @@
     .btn-cd{flex:1;padding:14px;background:#e05252;border:none;border-radius:var(--radius-sm);font-size:15px;font-weight:700;font-family:'Nunito',sans-serif;color:white;cursor:pointer;}
 
     /* ── TOAST ── */
-    .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--text);color:white;padding:12px 20px;border-radius:20px;font-size:14px;font-weight:500;z-index:500;transition:transform 0.3s ease;white-space:nowrap;pointer-events:none;}
-    .toast.show{transform:translateX(-50%) translateY(0);}
+    .toast{position:fixed;bottom:calc(24px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%) translateY(120px);background:var(--text);color:var(--cream);display:flex;align-items:center;gap:12px;padding:12px 20px;border-radius:20px;font-size:14px;font-weight:500;z-index:500;transition:transform 0.3s ease,opacity 0.3s ease;opacity:0;white-space:nowrap;pointer-events:none;}
+    .toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
+    .toast.has-action{pointer-events:auto;}
+    .toast-action{background:none;border:none;color:var(--rose);font-weight:800;font-size:14px;font-family:inherit;cursor:pointer;padding:4px 2px;}
+
+    /* ── LAST FEED ── */
+    .last-feed{margin:12px 16px 0;background:var(--white);border-radius:var(--radius);padding:12px 16px;box-shadow:0 2px 10px var(--shadow);display:flex;align-items:center;gap:12px;}
+    .last-feed-icon{font-size:24px;}
+    .last-feed-main{flex:1;min-width:0;}
+    .last-feed-label{font-size:12px;color:var(--text-soft);font-weight:700;}
+    .last-feed-ago{font-family:'Nunito','Noto Sans TC',sans-serif;font-size:24px;font-weight:900;color:var(--sky-deep);line-height:1.2;}
+    .last-feed-detail{font-size:12px;color:var(--text-soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .last-feed.warn .last-feed-ago{color:var(--warn);}
+
+    /* ── REPEAT BUTTON ── */
+    .repeat-btn{width:100%;margin-top:8px;background:var(--white);color:var(--rose-deep);border:2px solid var(--blush);border-radius:var(--radius);padding:11px 14px;font-size:15px;font-family:'Noto Sans TC',sans-serif;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 2px 10px var(--shadow);transition:transform 0.1s;}
+    .repeat-btn:active{transform:scale(0.97);}
+    .repeat-label{color:var(--text-soft);font-weight:600;font-size:13px;}
+
+    /* ── CHART ── */
+    .chart-section{margin:8px 16px 0;background:var(--white);border-radius:var(--radius);padding:14px 12px 10px;box-shadow:0 2px 10px var(--shadow);}
+    .chart-header{display:flex;align-items:center;justify-content:space-between;margin:0 4px 6px;}
+    .chart-title{font-size:13px;font-weight:700;color:var(--text-soft);}
+    .chart-tabs{display:flex;background:var(--blush);border-radius:10px;padding:2px;}
+    .chart-tab{border:none;background:none;font-size:12px;font-weight:700;color:var(--text-soft);padding:5px 12px;border-radius:8px;cursor:pointer;font-family:inherit;}
+    .chart-tab.active{background:var(--white);color:var(--rose-deep);box-shadow:0 1px 4px var(--shadow);}
+    .chart-svg{width:100%;height:auto;display:block;}
+    .chart-grid{stroke:var(--blush);stroke-width:1;}
+    .chart-axis{font-size:10px;fill:var(--text-soft);font-family:'Nunito','Noto Sans TC',sans-serif;}
+    .chart-axis.sel{fill:var(--rose-deep);font-weight:800;}
+    .chart-val{font-size:10px;fill:var(--text);font-weight:700;font-family:'Nunito',sans-serif;}
+    .chart-bar-f{fill:var(--rose-deep);}
+    .chart-bar-b{fill:var(--sage-deep);}
+    .chart-hit{fill:transparent;}
+    .chart-col{cursor:pointer;}
+    .chart-col.sel .chart-hit{fill:var(--blush);opacity:0.6;}
+    .chart-goal{stroke:var(--gold-deep);stroke-width:1.5;stroke-dasharray:4 3;}
+    .chart-goal-label{font-size:10px;fill:var(--gold-deep);font-weight:700;}
+    .chart-legend{display:flex;gap:14px;justify-content:center;font-size:11px;color:var(--text-soft);margin-top:4px;}
+    .chart-legend i{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:4px;vertical-align:-1px;}
+    .chart-stats{text-align:center;font-size:12px;color:var(--text);font-weight:600;margin-top:6px;}
+    .chart-empty{text-align:center;font-size:13px;color:var(--text-soft);padding:36px 0;}
   </style>
 </head>
 <body>
@@ -244,6 +273,16 @@
     <div id="backTodayWrap"></div>
   </div>
   <button class="date-nav-btn" id="nextDayBtn" onclick="changeDay(1)">›</button>
+</div>
+
+<!-- LAST FEED -->
+<div class="last-feed" id="lastFeed" style="display:none">
+  <div class="last-feed-icon">⏱️</div>
+  <div class="last-feed-main">
+    <div class="last-feed-label">距上次餵奶</div>
+    <div class="last-feed-ago" id="lastFeedAgo">—</div>
+    <div class="last-feed-detail" id="lastFeedDetail"></div>
+  </div>
 </div>
 
 <!-- CALENDAR MODAL -->
@@ -286,16 +325,6 @@
   </div>
 </div>
 
-<!-- INVENTORY -->
-<div class="inventory-section">
-  <div class="inventory-header">
-    <div class="inventory-title">📦 奶粉庫存</div>
-    <button class="inventory-manage-btn" onclick="openInventoryModal()">管理庫存</button>
-  </div>
-  <div class="inventory-list" id="inventoryList">
-    <div class="inventory-empty">尚未設定庫存，點「管理庫存」新增</div>
-  </div>
-</div>
 
 <!-- SUMMARY CARDS -->
 <div class="summary-section">
@@ -319,11 +348,27 @@
 <!-- ADD BUTTON -->
 <div class="add-btn-wrap">
   <button class="add-btn" id="addBtn" onclick="openModal()">＋ 新增餵奶紀錄</button>
+  <button class="repeat-btn" id="repeatBtn" onclick="repeatLast()" style="display:none">↻ 再來一筆 <span class="repeat-label" id="repeatLabel"></span></button>
 </div>
 
 <!-- RECORD LIST -->
 <div class="section-header" id="listHeader">📋 今日紀錄</div>
 <div class="records-list" id="recordsList"></div>
+
+<!-- CHART -->
+<div class="chart-section">
+  <div class="chart-header">
+    <div class="chart-title">📈 奶量趨勢</div>
+    <div class="chart-tabs">
+      <button class="chart-tab" data-days="7" onclick="setChartDays(7)">7 天</button>
+      <button class="chart-tab" data-days="30" onclick="setChartDays(30)">30 天</button>
+    </div>
+  </div>
+  <div id="chartWrap"></div>
+  <div class="chart-legend"><span><i style="background:var(--rose-deep)"></i>奶粉</span><span><i style="background:var(--sage-deep)"></i>母乳</span><span>點長條可跳到那天</span></div>
+  <div class="chart-stats" id="chartStats"></div>
+</div>
+<div style="height:90px"></div>
 
 <!-- ── ADD/EDIT RECORD MODAL ── -->
 <div class="modal-overlay" id="modalOverlay" onclick="handleOverlayClick(event)">
@@ -371,19 +416,6 @@
   </div>
 </div>
 
-<!-- ── INVENTORY MANAGE MODAL ── -->
-<div class="modal-overlay" id="inventoryModalOverlay" onclick="handleInvOverlayClick(event)">
-  <div class="modal">
-    <div class="modal-handle"></div>
-    <div class="modal-title">📦 管理奶粉庫存</div>
-    <div class="inv-brand-list" id="invBrandList"></div>
-    <div class="inv-hint">💡 請輸入每罐克數與目前罐數，系統會自動計算總庫存（g）。每次新增奶粉紀錄時自動扣除（每 30ml 扣 1g）。</div>
-    <div class="modal-actions">
-      <button class="btn-cancel" onclick="closeInventoryModal()">取消</button>
-      <button class="btn-save" onclick="saveInventory()">💾 儲存</button>
-    </div>
-  </div>
-</div>
 
 <!-- ── GOAL MODAL ── -->
 <div class="modal-overlay" id="goalModalOverlay" onclick="handleGoalOverlayClick(event)">
@@ -451,20 +483,20 @@
   const GOAL_PRESETS = [400,500,600,700,800,900,1000];
   const AVATARS_BABY  = ['👶🏻','👶🏼','👶🏽','👶🏾','👶🏿','👶','👧🏻','👧🏼','👧🏽','👧🏾','👧🏿','👧','👦🏻','👦🏼','👦🏽','👦🏾','👦🏿','👦'];
   const AVATARS_OTHER = ['🐣','🐥','🌸','⭐','🌈','🦋','🐧','🐨','🐼','🐸','🦊','🐰'];
-  // 每 30ml 奶液消耗約 1g 奶粉（可依品牌調整）
-  const ML_PER_GRAM = 30;
+  // 距上次餵奶超過幾小時就用橘色提醒
+  const LAST_FEED_WARN_HOURS = 3;
 
   // ── State ──
   let records=[], babies=[];
-  let currentBabyId=null;
+  let currentBabyId=lsGet('baby_current_id');
   let viewDate=new Date();
   let calDate=new Date();
   let editingRecordId=null, editingBabyId=null, deletingId=null;
   let currentAmount=120, selectedAvatar='👶';
   let currentFeedType='formula'; // 'formula' | 'breast'
   let goalMl=0;
-  // inventory: { [brandName]: gramsRemaining }
-  let inventory={};
+  let chartDays=parseInt(lsGet('baby_chart_days'))===30?30:7;
+  let lastSeenDayKey=dayKey(new Date());
   let db=null;
 
   // ── Init ──
@@ -475,9 +507,23 @@
     buildAvatarGrids();
     buildGoalPresets();
     loadGoal();
-    loadInventory();
-    setInterval(()=>{ renderSummary(); renderGoalBar(); },60000);
+    renderChartTabs();
+    setInterval(tick,30000);
+    document.addEventListener('visibilitychange',()=>{ if(!document.hidden) tick(); });
     connectFirebase();
+  }
+
+  // 每 30 秒：更新「距上次餵奶」，並處理跨過午夜
+  function tick(){
+    const k=dayKey(new Date());
+    if(k!==lastSeenDayKey){
+      const wasViewingToday=dayKey(viewDate)===lastSeenDayKey;
+      lastSeenDayKey=k;
+      if(wasViewingToday) setViewDateToToday();
+      renderDateNav(); renderAll();
+    } else {
+      renderLastFeed();
+    }
   }
 
   function setViewDateToToday(){
@@ -493,7 +539,7 @@
       onValue(ref(db,'babies'),snap=>{
         const d=snap.val();
         babies=d?Object.entries(d).map(([k,v])=>({...v,fbKey:k})):[];
-        if(!currentBabyId&&babies.length>0) currentBabyId=babies[0].id;
+        if(babies.length>0&&!babies.some(b=>b.id===currentBabyId)) setCurrentBaby(babies[0].id);
         renderBabyBar(); renderAll();
       });
       onValue(ref(db,'records'),snap=>{
@@ -510,28 +556,32 @@
     document.getElementById('syncText').textContent=t;
   }
 
+  function setCurrentBaby(id){ currentBabyId=id; lsSet('baby_current_id',id||''); }
+
+  // 寫入 Firebase：不等伺服器回應（離線時 Firebase 會自動排隊補傳），失敗才提示
+  function fbWrite(promise,failMsg){
+    Promise.resolve(promise).catch(err=>{ console.error(err); showToast(failMsg||'⚠️ 儲存失敗，請檢查網路'); });
+  }
+
   // ── Date Nav ──
-  window.changeDay=function(d){ viewDate=new Date(viewDate.getTime()+d*86400000); renderDateNav(); renderAll(); }
+  window.changeDay=function(d){ viewDate=new Date(viewDate.getFullYear(),viewDate.getMonth(),viewDate.getDate()+d); renderDateNav(); renderAll(); }
   window.goToToday=function(){ setViewDateToToday(); renderDateNav(); renderAll(); }
 
-  function isViewingToday(){
-    const n=new Date();
-    return viewDate.getFullYear()===n.getFullYear()&&viewDate.getMonth()===n.getMonth()&&viewDate.getDate()===n.getDate();
-  }
+  function isViewingToday(){ return dayKey(viewDate)===dayKey(new Date()); }
 
   function renderDateNav(){
     const today=new Date();
     const todayMid=new Date(today.getFullYear(),today.getMonth(),today.getDate());
     const diff=Math.round((viewDate-todayMid)/86400000);
+    const full=viewDate.toLocaleDateString('zh-TW',{month:'long',day:'numeric',weekday:'short'});
     let label,sub='';
-    if(diff===0){label='今天';sub=viewDate.toLocaleDateString('zh-TW',{month:'long',day:'numeric',weekday:'short'});}
-    else if(diff===-1){label='昨天';sub=viewDate.toLocaleDateString('zh-TW',{month:'long',day:'numeric',weekday:'short'});}
-    else{label=viewDate.toLocaleDateString('zh-TW',{month:'long',day:'numeric',weekday:'short'});sub=diff<0?`${Math.abs(diff)} 天前`:''}
+    if(diff===0){label='今天';sub=full;}
+    else if(diff===-1){label='昨天';sub=full;}
+    else{label=full;sub=diff<0?`${Math.abs(diff)} 天前`:''}
     document.getElementById('dateNavLabel').textContent=label;
     document.getElementById('dateNavSub').textContent=sub!==label?sub:'';
     document.getElementById('backTodayWrap').innerHTML=isViewingToday()?'':`<span class="date-nav-today" onclick="goToToday()">回到今天</span>`;
     document.getElementById('nextDayBtn').disabled=isViewingToday();
-    document.getElementById('addBtn').style.display=isViewingToday()?'flex':'none';
     document.getElementById('todayDate').textContent=today.toLocaleDateString('zh-TW',{month:'long',day:'numeric',weekday:'short'});
   }
 
@@ -544,7 +594,7 @@
 
   function getRecordDates(){
     const s=new Set();
-    records.forEach(r=>{ if(r.babyId===currentBabyId){ const d=new Date(r.time); s.add(`${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`); } });
+    records.forEach(r=>{ if(r.babyId===currentBabyId) s.add(dayKey(new Date(r.time))); });
     return s;
   }
 
@@ -552,8 +602,8 @@
     const year=calDate.getFullYear(),month=calDate.getMonth();
     document.getElementById('calMonthLabel').textContent=`${year} 年 ${month+1} 月`;
     const today=new Date();
-    const todayKey=`${today.getFullYear()}-${today.getMonth()}-${today.getDate()}`;
-    const selKey=`${viewDate.getFullYear()}-${viewDate.getMonth()}-${viewDate.getDate()}`;
+    const todayKey=dayKey(today);
+    const selKey=dayKey(viewDate);
     const recDates=getRecordDates();
     const firstDay=new Date(year,month,1).getDay();
     const daysInMonth=new Date(year,month+1,0).getDate();
@@ -561,7 +611,7 @@
     let html='';
     for(let i=firstDay-1;i>=0;i--) html+=`<div class="cal-day other-month"><span class="cal-day-num">${daysInPrev-i}</span></div>`;
     for(let d=1;d<=daysInMonth;d++){
-      const key=`${year}-${month}-${d}`;
+      const key=dayKey(new Date(year,month,d));
       const isFuture=new Date(year,month,d)>today;
       let cls='cal-day'+(key===todayKey?' today':'')+(key===selKey?' selected':'')+(recDates.has(key)?' has-data':'')+(isFuture?' other-month':'');
       const click=isFuture?'':` onclick="calSelectDay(${year},${month},${d})"`;
@@ -575,8 +625,7 @@
   window.calSelectDay=function(y,m,d){ viewDate=new Date(y,m,d); renderDateNav(); renderAll(); closeCalendar(); }
 
   // ── Goal ──
-  function loadGoal(){ const s=localStorage.getItem('baby_goal_ml'); goalMl=s?parseInt(s):0; }
-  function saveGoalToStorage(){ localStorage.setItem('baby_goal_ml',String(goalMl)); }
+  function loadGoal(){ const s=lsGet('baby_goal_ml'); goalMl=s?parseInt(s)||0:0; }
   function buildGoalPresets(){
     document.getElementById('goalPresets').innerHTML=GOAL_PRESETS.map(v=>
       `<div class="goal-preset${v===goalMl?' selected':''}" onclick="selectGoalPreset(this,${v})">${v} ml</div>`
@@ -589,11 +638,11 @@
   window.saveGoal=function(){
     const v=parseInt(document.getElementById('inputGoal').value);
     if(!v||v<100){ showToast('⚠️ 請輸入至少 100 ml 的目標'); return; }
-    goalMl=v; saveGoalToStorage(); closeGoalModal(); renderGoalBar(); showToast('🎯 目標已設定！');
+    goalMl=v; lsSet('baby_goal_ml',String(goalMl)); closeGoalModal(); renderGoalBar(); renderChart(); showToast('🎯 目標已設定！');
   }
 
   function renderGoalBar(){
-    const total=getViewDateRecords().reduce((s,r)=>s+r.amount,0);
+    const total=sumAmount(getViewDateRecords());
     document.getElementById('goalCurrent').textContent=total;
     if(!goalMl){ document.getElementById('goalTarget').textContent='—'; document.getElementById('goalBarFill').style.width='0%'; document.getElementById('goalStatusText').textContent='尚未設定目標'; document.getElementById('goalBadge').textContent=''; return; }
     const pct=Math.min(100,Math.round(total/goalMl*100));
@@ -605,183 +654,152 @@
     else{ document.getElementById('goalStatusText').textContent=`還差 ${goalMl-total} ml 達成（${pct}%）`; document.getElementById('goalBadge').textContent=`${pct}%`; document.getElementById('goalBadge').className='badge badge-progress'; }
   }
 
-  // ── Inventory ──
-  // 各品牌預設每罐克數（依台灣市售常見規格）
-  const DEFAULT_GRAMS_PER_CAN = {
-    '愛他美': 800,
-    '牛欄牌': 900,
-    '明治':   800,
-    '亞培':   820,
-    '桂格':   900,
-    '雀巢':   800,
-    '美強生': 900,
-    '惠氏':   800,
-    '貝親':   850,
-    '森永':   800,
-    '豐力富': 900,
-    '飛達兒': 400,
-    '嘉寶':   400,
-    '喜寶':   800,
-    '其他':   400,
-  };
-
-  function loadInventory(){ try{ const s=localStorage.getItem('baby_inventory'); inventory=s?JSON.parse(s):{}; }catch{ inventory={}; } }
-  function saveInventoryToStorage(){ localStorage.setItem('baby_inventory',JSON.stringify(inventory)); }
-
-  window.openInventoryModal=function(){
-    const list=document.getElementById('invBrandList');
-    // inventory[brand] = { gramsPerCan: number, grams: number }
-    list.innerHTML=BRANDS.map(b=>{
-      const entry=inventory[b]||{};
-      // 優先用已儲存的每罐克數，否則用品牌預設值
-      const gramsPerCan=entry.gramsPerCan || DEFAULT_GRAMS_PER_CAN[b] || 400;
-      const currentGrams=entry.grams||0;
-      const currentCans=currentGrams>0?(currentGrams/gramsPerCan).toFixed(1):'';
-      return `
-        <div class="inv-brand-row">
-          <div class="inv-brand-name">${b}</div>
-          <div class="inv-brand-fields">
-            <div class="inv-field-group">
-              <span class="inv-field-label">每罐</span>
-              <input class="inv-brand-input" type="number" min="1" max="9999" step="1"
-                data-brand="${b}" data-field="percan"
-                value="${gramsPerCan}" placeholder="${DEFAULT_GRAMS_PER_CAN[b]||400}"
-                oninput="updateInvResult('${b}')" />
-              <span class="inv-brand-unit">g</span>
-            </div>
-            <span class="inv-multiply">×</span>
-            <div class="inv-field-group">
-              <input class="inv-brand-input" type="number" min="0" max="99" step="0.5"
-                data-brand="${b}" data-field="cans"
-                value="${currentCans}" placeholder="0"
-                oninput="updateInvResult('${b}')" />
-              <span class="inv-brand-unit">罐</span>
-            </div>
-          </div>
-          <div class="inv-result" id="invResult-${b}">
-            ${currentGrams>0?`= ${currentGrams} g`:'（每罐 ${gramsPerCan}g）'}
-          </div>
-        </div>`;
-    }).join('');
-    document.getElementById('inventoryModalOverlay').classList.add('open');
-  }
-  window.closeInventoryModal=function(){ document.getElementById('inventoryModalOverlay').classList.remove('open'); }
-  window.handleInvOverlayClick=e=>{ if(e.target===document.getElementById('inventoryModalOverlay')) closeInventoryModal(); }
-
-  // 即時預覽換算結果
-  window.updateInvResult=function(brand){
-    const perCanEl=document.querySelector(`[data-brand="${brand}"][data-field="percan"]`);
-    const cansEl=document.querySelector(`[data-brand="${brand}"][data-field="cans"]`);
-    const perCan=parseFloat(perCanEl?.value)||0;
-    const cans=parseFloat(cansEl?.value)||0;
-    const totalG=Math.round(perCan*cans);
-    const resultEl=document.getElementById(`invResult-${brand}`);
-    if(resultEl){
-      if(totalG>0) resultEl.textContent=`= ${totalG} g`;
-      else resultEl.textContent=perCan>0?`（每罐 ${perCan}g）`:'';
-    }
-  }
-
-  window.saveInventory=function(){
-    BRANDS.forEach(brand=>{
-      const perCanEl=document.querySelector(`[data-brand="${brand}"][data-field="percan"]`);
-      const cansEl=document.querySelector(`[data-brand="${brand}"][data-field="cans"]`);
-      if(!perCanEl||!cansEl) return;
-      const perCan=parseFloat(perCanEl.value)||0;
-      const cans=parseFloat(cansEl.value)||0;
-      const totalG=Math.round(perCan*cans);
-      if(totalG>0) inventory[brand]={ gramsPerCan: perCan, grams: totalG };
-      else delete inventory[brand];
-    });
-    saveInventoryToStorage();
-    closeInventoryModal();
-    renderInventory();
-    showToast('📦 庫存已更新！');
-  }
-
-  function renderInventory(){
-    const el=document.getElementById('inventoryList');
-    // 支援新格式 {gramsPerCan, grams} 和舊格式 number
-    const entries=Object.entries(inventory).filter(([,v])=>{
-      const g=typeof v==='object'?v.grams:v;
-      return g>0;
-    });
-    if(entries.length===0){ el.innerHTML='<div class="inventory-empty">尚未設定庫存，點「管理庫存」新增</div>'; return; }
-    const maxG=Math.max(...entries.map(([,v])=>typeof v==='object'?v.grams:v));
-    el.innerHTML=entries.map(([brand,v])=>{
-      const grams=typeof v==='object'?v.grams:v;
-      const perCan=typeof v==='object'?v.gramsPerCan:null;
-      const pct=Math.round(grams/maxG*100);
-      const low=grams<100;
-      const cansLeft=perCan?`約 ${(grams/perCan).toFixed(1)} 罐`:'';
-      return `
-        <div class="inventory-item">
-          <div class="inventory-brand">${escHtml(brand)}</div>
-          <div class="inventory-bar-wrap"><div class="inventory-bar-fill${low?' low':''}" style="width:${pct}%"></div></div>
-          <div class="inventory-grams${low?' low':''}" style="min-width:80px;text-align:right">
-            ${grams}g${cansLeft?`<br><span style="font-size:10px;font-weight:500">${cansLeft}</span>`:''}${low?' ⚠️':''}
-          </div>
-        </div>`;
-    }).join('');
-  }
-
-  // 新增紀錄後扣除庫存
-  function deductInventory(brand, amountMl){
-    if(!brand||!inventory[brand]) return;
-    const deductG=Math.round(amountMl/ML_PER_GRAM);
-    const v=inventory[brand];
-    if(typeof v==='object') v.grams=Math.max(0,v.grams-deductG);
-    else inventory[brand]=Math.max(0,v-deductG);
-    saveInventoryToStorage();
-    renderInventory();
-    const remaining=typeof inventory[brand]==='object'?inventory[brand].grams:inventory[brand];
-    if(remaining<100) showToast(`⚠️ ${brand} 庫存剩餘不足 100g，記得補貨！`);
-  }
-
-  // 刪除紀錄後還原庫存
-  function restoreInventory(brand, amountMl){
-    if(!brand||brand==='母乳'||!inventory[brand]) return;
-    const restoreG=Math.round(amountMl/ML_PER_GRAM);
-    const v=inventory[brand];
-    if(typeof v==='object') v.grams+=restoreG;
-    else inventory[brand]+=restoreG;
-    saveInventoryToStorage();
-    renderInventory();
-  }
-
   // ── Render ──
-  function renderAll(){ renderSummary(); renderGoalBar(); renderInventory(); renderList(); updateAddBtn(); }
+  function renderAll(){ renderSummary(); renderGoalBar(); renderLastFeed(); renderChart(); renderList(); updateAddBtn(); }
 
   function updateAddBtn(){
     const btn=document.getElementById('addBtn');
     btn.disabled=!currentBabyId;
-    btn.textContent=currentBabyId?'＋ 新增餵奶紀錄':'＋ 請先新增寶寶';
+    btn.textContent=currentBabyId?(isViewingToday()?'＋ 新增餵奶紀錄':'＋ 補登這天的紀錄'):'＋ 請先新增寶寶';
+    const last=getLastRecord();
+    const rep=document.getElementById('repeatBtn');
+    if(!currentBabyId||!last||!isViewingToday()){ rep.style.display='none'; return; }
+    rep.style.display='flex';
+    const what=last.feedType==='breast'?'母乳':(last.brand||'奶粉');
+    document.getElementById('repeatLabel').textContent=`${last.amount} ml・${what}`;
   }
 
+  function babyRecords(){ return currentBabyId?records.filter(r=>r.babyId===currentBabyId):[]; }
+
   function getViewDateRecords(){
-    if(!currentBabyId) return [];
-    return records.filter(r=>{
-      if(r.babyId!==currentBabyId) return false;
-      const d=new Date(r.time);
-      return d.getFullYear()===viewDate.getFullYear()&&d.getMonth()===viewDate.getMonth()&&d.getDate()===viewDate.getDate();
-    });
+    const k=dayKey(viewDate);
+    return babyRecords().filter(r=>dayKey(new Date(r.time))===k);
   }
+
+  // 目前寶寶最新一筆（不含未來時間）
+  function getLastRecord(){
+    const now=Date.now()+60000;
+    let best=null,bestT=-Infinity;
+    babyRecords().forEach(r=>{ const t=new Date(r.time).getTime(); if(t<=now&&t>bestT){ best=r; bestT=t; } });
+    return best;
+  }
+
+  function sumAmount(recs){ return recs.reduce((s,r)=>s+(Number(r.amount)||0),0); }
 
   function renderSummary(){
     const recs=getViewDateRecords();
     const formulaRecs=recs.filter(r=>r.feedType!=='breast');
     const breastRecs=recs.filter(r=>r.feedType==='breast');
-    const total=recs.reduce((s,r)=>s+r.amount,0);
-    const formulaTotal=formulaRecs.reduce((s,r)=>s+r.amount,0);
-    const breastTotal=breastRecs.reduce((s,r)=>s+r.amount,0);
     const baby=babies.find(b=>b.id===currentBabyId);
-    document.getElementById('totalAmount').textContent=total;
+    document.getElementById('totalAmount').textContent=sumAmount(recs);
     document.getElementById('totalCount').textContent=`共 ${recs.length} 次`;
-    document.getElementById('formulaAmount').textContent=formulaTotal;
+    document.getElementById('formulaAmount').textContent=sumAmount(formulaRecs);
     document.getElementById('formulaCount').textContent=`${formulaRecs.length} 次`;
-    document.getElementById('breastAmount').textContent=breastTotal;
+    document.getElementById('breastAmount').textContent=sumAmount(breastRecs);
     document.getElementById('breastCount').textContent=`${breastRecs.length} 次`;
     document.getElementById('listHeader').textContent=`📋 ${baby?baby.name+' ':''}${isViewingToday()?'今日':'當日'}紀錄`;
+  }
+
+  // ── 距上次餵奶 ──
+  function renderLastFeed(){
+    const box=document.getElementById('lastFeed');
+    const last=getLastRecord();
+    if(!currentBabyId||!last){ box.style.display='none'; return; }
+    box.style.display='flex';
+    const mins=Math.max(0,Math.floor((Date.now()-new Date(last.time).getTime())/60000));
+    const h=Math.floor(mins/60),m=mins%60;
+    let txt;
+    if(mins<1) txt='剛剛';
+    else if(h===0) txt=`${m} 分鐘`;
+    else if(h<48) txt=`${h} 小時 ${m} 分`;
+    else txt=`${Math.floor(h/24)} 天`;
+    document.getElementById('lastFeedAgo').textContent=txt;
+    const d=new Date(last.time);
+    const dayLabel=dayKey(d)===dayKey(new Date())?'':(dayKey(d)===dayKey(new Date(Date.now()-86400000))?'昨天 ':`${d.getMonth()+1}/${d.getDate()} `);
+    const what=last.feedType==='breast'?'🤱 母乳':'🍼 '+(last.brand||'奶粉');
+    document.getElementById('lastFeedDetail').textContent=`${dayLabel}${formatTime(last.time)}・${last.amount} ml・${what}`;
+    box.classList.toggle('warn',h>=LAST_FEED_WARN_HOURS);
+  }
+
+  // ── 奶量圖表 ──
+  window.setChartDays=function(n){ chartDays=n; lsSet('baby_chart_days',String(n)); renderChartTabs(); renderChart(); }
+  function renderChartTabs(){
+    document.querySelectorAll('.chart-tab').forEach(el=>el.classList.toggle('active',parseInt(el.dataset.days)===chartDays));
+  }
+
+  function renderChart(){
+    const wrap=document.getElementById('chartWrap');
+    const stats=document.getElementById('chartStats');
+    if(!currentBabyId){ wrap.innerHTML='<div class="chart-empty">新增寶寶後就會顯示圖表</div>'; stats.textContent=''; return; }
+    // 一次掃過所有紀錄，算出每天奶粉／母乳總量
+    const byDay={};
+    babyRecords().forEach(r=>{
+      const k=dayKey(new Date(r.time));
+      const e=byDay[k]||(byDay[k]={f:0,b:0,n:0});
+      if(r.feedType==='breast') e.b+=Number(r.amount)||0; else e.f+=Number(r.amount)||0;
+      e.n++;
+    });
+    const n=chartDays;
+    const t=new Date();
+    const days=[];
+    for(let i=n-1;i>=0;i--){
+      const d=new Date(t.getFullYear(),t.getMonth(),t.getDate()-i);
+      const e=byDay[dayKey(d)]||{f:0,b:0,n:0};
+      days.push({d,key:dayKey(d),...e,total:e.f+e.b});
+    }
+    const withData=days.filter(x=>x.n>0);
+    const maxTotal=Math.max(0,...days.map(x=>x.total));
+    if(withData.length===0){ wrap.innerHTML=`<div class="chart-empty">近 ${n} 天還沒有紀錄</div>`; stats.textContent=''; return; }
+
+    const W=340,H=170,padL=34,padR=14,padT=16,padB=22;
+    const plotW=W-padL-padR,plotH=H-padT-padB;
+    const yMax=niceCeil(Math.max(maxTotal,goalMl||0,100));
+    const y=v=>padT+plotH-(v/yMax)*plotH;
+    const slot=plotW/n;
+    const barW=Math.max(3,slot*(n<=7?0.56:0.7));
+    const selKey=dayKey(viewDate);
+    let svg=`<svg viewBox="0 0 ${W} ${H}" class="chart-svg" role="img" aria-label="近 ${n} 天每日奶量">`;
+    // 格線
+    for(let i=0;i<=4;i++){
+      const v=yMax*i/4, yy=y(v);
+      svg+=`<line x1="${padL}" x2="${W-padR}" y1="${yy}" y2="${yy}" class="chart-grid"/>`;
+      svg+=`<text x="${padL-5}" y="${yy+3.5}" class="chart-axis" text-anchor="end">${v}</text>`;
+    }
+    days.forEach((x,i)=>{
+      const cx=padL+slot*i+slot/2, bx=cx-barW/2;
+      const sel=x.key===selKey;
+      // 可點擊區（整欄）
+      svg+=`<g class="chart-col${sel?' sel':''}" onclick="chartGoDay(${x.d.getFullYear()},${x.d.getMonth()},${x.d.getDate()})">`;
+      svg+=`<rect x="${padL+slot*i}" y="${padT}" width="${slot}" height="${plotH}" class="chart-hit"/>`;
+      if(x.f>0) svg+=`<rect x="${bx}" y="${y(x.f)}" width="${barW}" height="${y(0)-y(x.f)}" rx="${Math.min(3,barW/3)}" class="chart-bar-f"/>`;
+      if(x.b>0) svg+=`<rect x="${bx}" y="${y(x.f+x.b)}" width="${barW}" height="${y(x.f)-y(x.f+x.b)}" rx="${Math.min(3,barW/3)}" class="chart-bar-b"/>`;
+      if(n<=7&&x.total>0) svg+=`<text x="${cx}" y="${y(x.total)-4}" class="chart-val" text-anchor="middle">${x.total}</text>`;
+      const showLabel=n<=7||i%5===(n-1)%5;
+      if(showLabel){
+        const lab=n<=7?['日','一','二','三','四','五','六'][x.d.getDay()]:`${x.d.getMonth()+1}/${x.d.getDate()}`;
+        svg+=`<text x="${cx}" y="${H-6}" class="chart-axis${sel?' sel':''}" text-anchor="middle">${lab}</text>`;
+      }
+      svg+='</g>';
+    });
+    if(goalMl){
+      svg+=`<line x1="${padL}" x2="${W-padR}" y1="${y(goalMl)}" y2="${y(goalMl)}" class="chart-goal"/>`;
+      svg+=`<text x="${W-padR}" y="${y(goalMl)-4}" class="chart-goal-label" text-anchor="end">目標 ${goalMl}</text>`;
+    }
+    svg+='</svg>';
+    wrap.innerHTML=svg;
+    // 今天還沒過完，不算進平均
+    const done=withData.filter(x=>x.key!==dayKey(t));
+    const base=done.length?done:withData;
+    const avg=Math.round(base.reduce((s,x)=>s+x.total,0)/base.length);
+    const avgN=Math.round(base.reduce((s,x)=>s+x.n,0)/base.length*10)/10;
+    stats.textContent=`平均每天 ${avg} ml・${avgN} 次（${base.length} 天有紀錄${done.length?'，不含今天':''}）`;
+  }
+  window.chartGoDay=function(y,m,d){ viewDate=new Date(y,m,d); renderDateNav(); renderAll(); }
+
+  function niceCeil(v){
+    const steps=[100,200,250,400,500,600,800,1000,1200,1500,2000,2500,3000,4000,5000];
+    for(const s of steps) if(v<=s) return s;
+    return Math.ceil(v/1000)*1000;
   }
 
   function renderList(){
@@ -794,17 +812,21 @@
       const icon=isBreast?'🤱':'🍼';
       const meta=isBreast?[r.note?'📝 '+escHtml(r.note):''].filter(Boolean).join('')
         :[r.brand?'🏷️ '+escHtml(r.brand):'',r.note?'📝 '+escHtml(r.note):''].filter(Boolean).join('　');
+      // 與下一筆（較早）的間隔
+      const prev=recs[i+1];
+      const gap=prev?Math.round((new Date(r.time)-new Date(prev.time))/60000):null;
+      const gapTxt=gap!=null&&gap>0?`<span class="record-gap">間隔 ${gap>=60?Math.floor(gap/60)+' 小時 ':''}${gap%60?gap%60+' 分':''}</span>`:'';
       return `
         <div class="record-card">
           <div class="record-icon ${isBreast?'breast':'formula'}">${icon}</div>
           <div class="record-info">
-            <div class="record-time">${formatTime(r.time)}<span class="record-nth">第 ${recs.length-i} 次</span></div>
-            <div class="record-amount ${isBreast?'breast':'formula'}">${r.amount} ml　${isBreast?'🤱 母乳':'🍼 奶粉'}</div>
+            <div class="record-time">${formatTime(r.time)}<span class="record-nth">第 ${recs.length-i} 次</span>${gapTxt}</div>
+            <div class="record-amount ${isBreast?'breast':'formula'}">${escHtml(r.amount)} ml　${isBreast?'🤱 母乳':'🍼 奶粉'}</div>
             ${meta?`<div class="record-meta">${meta}</div>`:''}
           </div>
           <div class="record-actions">
-            <button class="btn-icon btn-edit" onclick="openEditModal('${r.id}')">✏️</button>
-            <button class="btn-icon btn-delete" onclick="askDelete('${r.id}')">🗑️</button>
+            <button class="btn-icon btn-edit" aria-label="修改" onclick="openEditModal('${escAttr(r.id)}')">✏️</button>
+            <button class="btn-icon btn-delete" aria-label="刪除" onclick="askDelete('${escAttr(r.id)}')">🗑️</button>
           </div>
         </div>`;
     }).join('');
@@ -816,10 +838,15 @@
     const addBtn=bar.querySelector('.btn-add-baby');
     bar.querySelectorAll('.baby-tab').forEach(el=>el.remove());
     babies.forEach(b=>{
+      const active=b.id===currentBabyId;
       const tab=document.createElement('div');
-      tab.className='baby-tab'+(b.id===currentBabyId?' active':'');
-      tab.innerHTML=`<span>${b.avatar||'👶'}</span>${escHtml(b.name)}`;
-      tab.onclick=()=>{ currentBabyId=b.id; renderBabyBar(); renderAll(); };
+      tab.className='baby-tab'+(active?' active':'');
+      tab.innerHTML=`<span>${escHtml(b.avatar||'👶')}</span>${escHtml(b.name)}${active?'<span class="baby-edit" aria-label="編輯">✏️</span>':''}`;
+      // 點未選的寶寶 = 切換；點已選的寶寶 = 編輯名字與頭像
+      tab.onclick=()=>{
+        if(b.id===currentBabyId){ openBabyModal(b.id); return; }
+        setCurrentBaby(b.id); renderBabyBar(); renderAll();
+      };
       tab.oncontextmenu=e=>{ e.preventDefault(); openBabyModal(b.id); };
       bar.insertBefore(tab,addBtn);
     });
@@ -853,12 +880,19 @@
     if(!currentBabyId){ showToast('⚠️ 請先新增寶寶'); return; }
     editingRecordId=null;
     document.getElementById('modalTitle').textContent='新增餵奶紀錄';
-    document.getElementById('inputTime').value=toLocalISO(new Date());
-    setAmount(120);
-    document.getElementById('inputBrand').value='';
+    // 補登過去日期時，預設時間放在那天的現在時刻
+    const now=new Date();
+    const t=isViewingToday()?now:new Date(viewDate.getFullYear(),viewDate.getMonth(),viewDate.getDate(),now.getHours(),now.getMinutes());
+    document.getElementById('inputTime').value=toLocalISO(t);
+    // 預設帶入上一筆的類型、奶量、品牌
+    const last=getLastRecord();
+    setAmount(last?Number(last.amount)||120:120);
+    const brand=last&&last.feedType!=='breast'?(last.brand||''):'';
+    document.getElementById('inputBrand').value=brand;
     document.getElementById('inputNote').value='';
     clearChips();
-    setFeedType('formula');
+    document.querySelectorAll('.brand-chip').forEach(c=>{ if(brand&&c.textContent===brand) c.classList.add('selected'); });
+    setFeedType(last?.feedType==='breast'?'breast':'formula');
     document.getElementById('modalOverlay').classList.add('open');
   }
 
@@ -866,8 +900,8 @@
     const r=records.find(rec=>rec.id===id); if(!r) return;
     editingRecordId=id;
     document.getElementById('modalTitle').textContent='修改餵奶紀錄';
-    document.getElementById('inputTime').value=r.time.slice(0,16);
-    setAmount(r.amount);
+    document.getElementById('inputTime').value=String(r.time).slice(0,16);
+    setAmount(Number(r.amount)||0);
     document.getElementById('inputBrand').value=r.brand||'';
     document.getElementById('inputNote').value=r.note||'';
     clearChips();
@@ -884,25 +918,47 @@
   window.selectBrand=function(el,brand){ clearChips(); el.classList.add('selected'); document.getElementById('inputBrand').value=brand; }
   function clearChips(){ document.querySelectorAll('.brand-chip').forEach(c=>c.classList.remove('selected')); }
 
-  window.saveRecord=async function(){
+  window.saveRecord=function(){
+    if(!db){ showToast('⚠️ 尚未連線，請稍後再試'); return; }
     const time=document.getElementById('inputTime').value;
     const brand=currentFeedType==='breast'?'':document.getElementById('inputBrand').value.trim();
     const note=document.getElementById('inputNote').value.trim();
     if(!time){ showToast('⚠️ 請填寫時間'); return; }
 
     if(editingRecordId){
-      // 修改：先還原舊庫存，再扣新的
       const old=records.find(rec=>rec.id===editingRecordId);
-      if(old&&old.feedType!=='breast') restoreInventory(old.brand,old.amount);
-      if(old?.fbKey) await set(ref(db,'records/'+old.fbKey),{id:old.id,babyId:old.babyId,time,amount:currentAmount,brand,note,feedType:currentFeedType,createdAt:old.createdAt});
-      if(currentFeedType!=='breast') deductInventory(brand,currentAmount);
+      if(old?.fbKey){
+        // 保留原紀錄的所有欄位，只覆蓋在表單裡改過的欄位
+        const {fbKey,...keep}=old;
+        fbWrite(set(ref(db,'records/'+fbKey),{...keep,time,amount:currentAmount,brand,note,feedType:currentFeedType}));
+      }
       showToast('✅ 已更新紀錄');
     } else {
-      await push(ref(db,'records'),{id:crypto.randomUUID(),babyId:currentBabyId,time,amount:currentAmount,brand,note,feedType:currentFeedType,createdAt:new Date().toISOString()});
-      if(currentFeedType!=='breast') deductInventory(brand,currentAmount);
+      addRecord({time,amount:currentAmount,brand,note,feedType:currentFeedType});
       showToast(currentFeedType==='breast'?'🤱 已新增母乳紀錄':'🍼 已新增奶粉紀錄');
     }
     closeModal();
+  }
+
+  function addRecord({time,amount,brand,note,feedType}){
+    const rec={id:uuid(),babyId:currentBabyId,time,amount,brand,note,feedType,createdAt:new Date().toISOString()};
+    const newRef=push(ref(db,'records'));
+    fbWrite(set(newRef,rec));
+    return {rec,newRef};
+  }
+
+  // ── 一鍵重複上一筆 ──
+  window.repeatLast=function(){
+    if(!db){ showToast('⚠️ 尚未連線，請稍後再試'); return; }
+    const last=getLastRecord(); if(!last) return;
+    const {newRef}=addRecord({
+      time:toLocalISO(new Date()),
+      amount:Number(last.amount)||0,
+      brand:last.feedType==='breast'?'':(last.brand||''),
+      note:'',
+      feedType:last.feedType==='breast'?'breast':'formula'
+    });
+    showToast(`✅ 已新增 ${last.amount} ml`,{label:'復原',fn:()=>{ fbWrite(remove(newRef)); showToast('↩️ 已復原'); }});
   }
 
   // ── Baby Modal ──
@@ -918,17 +974,21 @@
   window.closeBabyModal=function(){ document.getElementById('babyModalOverlay').classList.remove('open'); editingBabyId=null; }
   window.handleBabyOverlayClick=e=>{ if(e.target===document.getElementById('babyModalOverlay')) closeBabyModal(); }
   window.selectAvatar=function(el,emoji){ document.querySelectorAll('.emoji-opt').forEach(e=>e.classList.remove('selected')); el.classList.add('selected'); selectedAvatar=emoji; }
-  window.saveBaby=async function(){
+  window.saveBaby=function(){
+    if(!db){ showToast('⚠️ 尚未連線，請稍後再試'); return; }
     const name=document.getElementById('inputBabyName').value.trim();
     if(!name){ showToast('⚠️ 請輸入寶寶名字'); return; }
     if(editingBabyId){
       const b=babies.find(b=>b.id===editingBabyId);
-      if(b?.fbKey) await set(ref(db,'babies/'+b.fbKey),{id:b.id,name,avatar:selectedAvatar});
+      if(b?.fbKey){
+        const {fbKey,...keep}=b;
+        fbWrite(set(ref(db,'babies/'+fbKey),{...keep,name,avatar:selectedAvatar}));
+      }
       showToast('✅ 已更新寶寶資料');
     } else {
-      const newBaby={id:crypto.randomUUID(),name,avatar:selectedAvatar};
-      await push(ref(db,'babies'),newBaby);
-      currentBabyId=newBaby.id;
+      const newBaby={id:uuid(),name,avatar:selectedAvatar};
+      fbWrite(push(ref(db,'babies'),newBaby));
+      setCurrentBaby(newBaby.id);
       showToast(`🎉 已新增 ${name}！`);
     }
     closeBabyModal();
@@ -937,22 +997,40 @@
   // ── Delete ──
   window.askDelete=id=>{ deletingId=id; document.getElementById('confirmOverlay').classList.add('open'); }
   window.closeConfirm=()=>{ document.getElementById('confirmOverlay').classList.remove('open'); deletingId=null; }
-  window.confirmDelete=async function(){
+  window.confirmDelete=function(){
     if(!deletingId) return;
     const r=records.find(rec=>rec.id===deletingId);
-    if(r){ restoreInventory(r.brand,r.amount); }
-    if(r?.fbKey) await remove(ref(db,'records/'+r.fbKey));
+    if(r?.fbKey) fbWrite(remove(ref(db,'records/'+r.fbKey)),'⚠️ 刪除失敗，請檢查網路');
     closeConfirm(); showToast('🗑️ 已刪除紀錄');
   }
 
   // ── Helpers ──
+  function uuid(){
+    if(window.crypto?.randomUUID) return crypto.randomUUID();
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,c=>{ const r=Math.random()*16|0; return (c==='x'?r:(r&3|8)).toString(16); });
+  }
+  function dayKey(d){ return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`; }
   function toLocalISO(d){ return new Date(d-d.getTimezoneOffset()*60000).toISOString().slice(0,16); }
   function formatTime(iso){ return new Date(iso).toLocaleTimeString('zh-TW',{hour:'2-digit',minute:'2-digit',hour12:false}); }
   function escHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-  function showToast(msg){
+  function escAttr(s){ return escHtml(s).replace(/'/g,'&#39;').replace(/\\/g,'\\\\'); }
+  function lsGet(k){ try{ return localStorage.getItem(k); }catch{ return null; } }
+  function lsSet(k,v){ try{ localStorage.setItem(k,v); }catch{} }
+  let toastTimer=null;
+  function showToast(msg,action){
     const el=document.getElementById('toast');
-    el.textContent=msg; el.classList.add('show');
-    setTimeout(()=>el.classList.remove('show'),2800);
+    el.innerHTML='';
+    const span=document.createElement('span'); span.textContent=msg; el.appendChild(span);
+    if(action){
+      const btn=document.createElement('button');
+      btn.className='toast-action'; btn.textContent=action.label;
+      btn.onclick=()=>{ el.classList.remove('show'); action.fn(); };
+      el.appendChild(btn);
+    }
+    el.classList.toggle('has-action',!!action);
+    el.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer=setTimeout(()=>el.classList.remove('show'),action?5000:2800);
   }
   window.showToast=showToast;
 
