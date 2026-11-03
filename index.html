@@ -2,7 +2,7 @@
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <meta name="theme-color" content="#f9e8e0" media="(prefers-color-scheme: light)" />
   <meta name="theme-color" content="#2b2120" media="(prefers-color-scheme: dark)" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -34,7 +34,8 @@
       }
     }
     *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
-    html{background:var(--cream);}
+    html{background:var(--cream);touch-action:manipulation;-webkit-text-size-adjust:100%;text-size-adjust:100%;}
+    *{touch-action:manipulation;}
     body{font-family:'Noto Sans TC',sans-serif;background:var(--cream);color:var(--text);min-height:100vh;max-width:430px;margin:0 auto;padding-bottom:env(safe-area-inset-bottom);}
 
     /* ── TOP BAR ── */
@@ -168,7 +169,14 @@
     .amount-stepper{display:flex;align-items:center;gap:12px;}
     .stepper-btn{width:48px;height:48px;background:var(--blush);border:none;border-radius:14px;font-size:22px;font-weight:700;color:var(--rose-deep);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:transform 0.1s;}
     .stepper-btn:active{transform:scale(0.9);}
-    .stepper-display{flex:1;text-align:center;font-family:'Nunito',sans-serif;font-size:28px;font-weight:900;color:var(--rose-deep);}
+    .stepper-display{flex:1;display:flex;align-items:baseline;justify-content:center;gap:4px;font-family:'Nunito',sans-serif;font-size:28px;font-weight:900;color:var(--rose-deep);}
+    .amount-input{width:2.6em;text-align:center;font:inherit;color:inherit;background:transparent;border:2px dashed transparent;border-radius:10px;padding:2px 0;outline:none;-moz-appearance:textfield;appearance:textfield;cursor:text;}
+    .amount-input::-webkit-outer-spin-button,.amount-input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}
+    .amount-input:hover{border-color:var(--blush);}
+    .amount-input:focus{border-color:var(--rose);background:var(--white);}
+    .amount-slider{width:100%;margin:14px 0 2px;height:32px;accent-color:var(--rose-deep);cursor:pointer;}
+    .amount-scale{display:flex;justify-content:space-between;font-size:11px;color:var(--text-soft);padding:0 2px;}
+    .amount-hint{font-size:11px;color:var(--text-soft);text-align:center;margin-top:4px;}
     .stepper-unit{font-size:14px;color:var(--text-soft);font-weight:600;}
     .modal-actions{display:flex;gap:10px;margin-top:24px;}
     .btn-cancel{flex:1;padding:15px;background:var(--blush);border:none;border-radius:var(--radius-sm);font-size:16px;font-family:'Nunito',sans-serif;font-weight:800;color:var(--text-soft);cursor:pointer;}
@@ -393,9 +401,12 @@
       <label class="form-label">🍼 奶量（ml）</label>
       <div class="amount-stepper">
         <button class="stepper-btn" onclick="changeAmount(-10)">－</button>
-        <div class="stepper-display"><span id="amountDisplay">120</span><span class="stepper-unit"> ml</span></div>
+        <div class="stepper-display"><input type="number" id="amountDisplay" class="amount-input" inputmode="numeric" pattern="[0-9]*" min="0" max="999" value="120" aria-label="奶量（ml）" oninput="onAmountType(this.value)" onblur="commitAmountInput()" onkeydown="if(event.key==='Enter'){this.blur();}" onfocus="this.select()" /><span class="stepper-unit">ml</span></div>
         <button class="stepper-btn" onclick="changeAmount(+10)">＋</button>
       </div>
+      <input type="range" id="amountSlider" class="amount-slider" min="0" max="300" step="5" value="120" aria-label="奶量滑桿" oninput="onAmountSlide(this.value)" />
+      <div class="amount-scale"><span>0</span><span>100</span><span>200</span><span>300</span></div>
+      <div class="amount-hint">拖動滑桿選擇，或點數字直接輸入</div>
     </div>
 
     <!-- 品牌區（奶粉才顯示） -->
@@ -492,7 +503,7 @@
   let viewDate=new Date();
   let calDate=new Date();
   let editingRecordId=null, editingBabyId=null, deletingId=null;
-  let currentAmount=120, selectedAvatar='👶';
+  let currentAmount=120, amountTouched=false, selectedAvatar='👶';
   let currentFeedType='formula'; // 'formula' | 'breast'
   let goalMl=0;
   let chartDays=parseInt(lsGet('baby_chart_days'))===30?30:7;
@@ -901,7 +912,7 @@
     editingRecordId=id;
     document.getElementById('modalTitle').textContent='修改餵奶紀錄';
     document.getElementById('inputTime').value=String(r.time).slice(0,16);
-    setAmount(Number(r.amount)||0);
+    setAmount(Number(r.amount)||0,null,true);
     document.getElementById('inputBrand').value=r.brand||'';
     document.getElementById('inputNote').value=r.note||'';
     clearChips();
@@ -913,8 +924,18 @@
   window.closeModal=function(){ document.getElementById('modalOverlay').classList.remove('open'); editingRecordId=null; }
   window.handleOverlayClick=e=>{ if(e.target===document.getElementById('modalOverlay')) closeModal(); }
 
-  function setAmount(v){ currentAmount=Math.max(10,Math.min(999,v)); document.getElementById('amountDisplay').textContent=currentAmount; }
-  window.changeAmount=d=>setAmount(currentAmount+d);
+  // raw=true：保留原本數值（修改舊紀錄時不改動奶量）
+  function setAmount(v,src,raw){
+    v=Number(v)||0;
+    currentAmount=raw?v:Math.max(0,Math.min(999,Math.round(v)));
+    amountTouched=!raw;
+    if(src!=='input') document.getElementById('amountDisplay').value=currentAmount;
+    if(src!=='slider') document.getElementById('amountSlider').value=Math.min(300,currentAmount);
+  }
+  window.onAmountSlide=v=>setAmount(Number(v),'slider');
+  window.onAmountType=function(val){ const n=parseInt(val,10); if(!isNaN(n)) setAmount(n,'input'); }
+  window.commitAmountInput=function(){ const el=document.getElementById('amountDisplay'); const n=parseInt(el.value,10); setAmount(isNaN(n)?currentAmount:n); }
+  window.changeAmount=d=>{ document.getElementById('amountDisplay').blur(); setAmount(currentAmount+d); };
   window.selectBrand=function(el,brand){ clearChips(); el.classList.add('selected'); document.getElementById('inputBrand').value=brand; }
   function clearChips(){ document.querySelectorAll('.brand-chip').forEach(c=>c.classList.remove('selected')); }
 
@@ -924,13 +945,14 @@
     const brand=currentFeedType==='breast'?'':document.getElementById('inputBrand').value.trim();
     const note=document.getElementById('inputNote').value.trim();
     if(!time){ showToast('⚠️ 請填寫時間'); return; }
+    if(!(currentAmount>0)){ showToast('⚠️ 請選擇奶量'); return; }
 
     if(editingRecordId){
       const old=records.find(rec=>rec.id===editingRecordId);
       if(old?.fbKey){
         // 保留原紀錄的所有欄位，只覆蓋在表單裡改過的欄位
         const {fbKey,...keep}=old;
-        fbWrite(set(ref(db,'records/'+fbKey),{...keep,time,amount:currentAmount,brand,note,feedType:currentFeedType}));
+        fbWrite(set(ref(db,'records/'+fbKey),{...keep,time,amount:amountTouched?currentAmount:keep.amount,brand,note,feedType:currentFeedType}));
       }
       showToast('✅ 已更新紀錄');
     } else {
@@ -1036,6 +1058,12 @@
 
   init();
   if('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(()=>{});
+</script>
+<script>
+  // iOS Safari 會忽略 user-scalable=no，這裡另外擋掉雙指縮放
+  ['gesturestart','gesturechange','gestureend'].forEach(t=>document.addEventListener(t,e=>e.preventDefault(),{passive:false}));
+  document.addEventListener('touchmove',e=>{ if(e.touches.length>1) e.preventDefault(); },{passive:false});
+  // 雙擊放大已由 CSS touch-action:manipulation 取消（不影響快速連按＋／－）
 </script>
 </body>
 </html>

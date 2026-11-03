@@ -1,5 +1,5 @@
 // ★ 每次更新 App 時，把這裡的版本號改一下（例如 v5、v6）
-const CACHE_NAME = 'baby-feed-v4';
+const CACHE_NAME = 'baby-feed-v5';
 
 const ASSETS = [
   './',
